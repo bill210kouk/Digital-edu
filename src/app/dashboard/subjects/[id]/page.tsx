@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { assertSubjectOwner } from "@/lib/ownership";
 import { prisma } from "@/lib/prisma";
+import { assignJoinCode } from "@/lib/joinCode";
 import SubjectDetail from "@/components/SubjectDetail";
 
 export default async function SubjectPage({
@@ -23,6 +24,7 @@ export default async function SubjectPage({
     },
   });
   if (!subject) notFound();
+  const joinCode = subject.joinCode ?? (await assignJoinCode(id));
 
   const results = await prisma.gameResult.findMany({
     where: { subjectId: id },
@@ -40,5 +42,5 @@ export default async function SubjectPage({
     select: { id: true, title: true, type: true },
   });
 
-  return <SubjectDetail subject={subject} results={results} activities={activities} />;
+  return <SubjectDetail subject={subject} joinCode={joinCode} results={results} activities={activities} />;
 }

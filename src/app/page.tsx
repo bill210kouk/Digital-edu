@@ -40,6 +40,9 @@ export default async function Home() {
           </>
         )}
       </div>
+      <Link href="/join" className="mt-6 text-sky-700 font-semibold hover:underline">
+        Είμαι μαθητής, έχω κωδικό τάξης 🎮
+      </Link>
 
       <div className="grid sm:grid-cols-3 gap-6 mt-16 max-w-4xl">
         {[
