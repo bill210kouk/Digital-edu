@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Εργαστήρι Δραστηριοτήτων</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;700&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+/* Plan: τετράδιο με τετραγωνισμένο χαρτί, μελάνι ναυτικό μπλε, κίτρινο μαρκαδόρου για τις ενέργειες, κουμπιά-αυτοκόλλητα με σκληρή σκιά.
+   Διάταξη: μία στήλη εργασίας, κάρτες σε πλέγμα, μεγάλοι στόχοι αφής. */
+:root{
+  --paper:#EEF2F6;--grid:rgba(20,33,61,.07);--card:#FFFFFF;--ink:#14213D;--ink2:#4A5775;--line:#B9C5D6;
+  --accent:#F2A900;--accent-ink:#2B1D00;--brand:#1B4B9B;--brand-ink:#FFFFFF;
+  --ok:#0B7A5E;--okbg:#D5F0E6;--no:#B4541A;--nobg:#FBE3D2;--hl:#FFF1BF;
+  --fs:17px;--disp:'Comfortaa','Segoe UI',system-ui,sans-serif;--body:'Manrope','Segoe UI',system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1626;--grid:rgba(255,255,255,.05);--card:#17233B;--ink:#E8EEF8;--ink2:#A3B2CC;--line:#34456A;
+    --accent:#F2B930;--accent-ink:#2B1D00;--brand:#8CB4FF;--brand-ink:#0E1626;
+    --ok:#52D6A8;--okbg:#103D31;--no:#F2A272;--nobg:#47281B;--hl:#4A3D10;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1626;--grid:rgba(255,255,255,.05);--card:#17233B;--ink:#E8EEF8;--ink2:#A3B2CC;--line:#34456A;
+  --accent:#F2B930;--accent-ink:#2B1D00;--brand:#8CB4FF;--brand-ink:#0E1626;
+  --ok:#52D6A8;--okbg:#103D31;--no:#F2A272;--nobg:#47281B;--hl:#4A3D10;color-scheme:dark;
+}
+:root.hc{--paper:#FFFFFF;--grid:transparent;--card:#FFFFFF;--ink:#000000;--ink2:#1A1A1A;--line:#000000;--brand:#0A2E73;--brand-ink:#FFFFFF;--accent:#FFD21F;--accent-ink:#000;--hl:#FFF59A;--okbg:#BFEBD8;--nobg:#FFD7BD;color-scheme:light}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{font-size:var(--fs);height:100%}
+body{margin:0;min-height:100%;font-family:var(--body);color:var(--ink);background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px;line-height:1.5}
+body.sp{letter-spacing:.04em;word-spacing:.12em;line-height:1.85}
+h1,h2,h3{font-family:var(--disp);line-height:1.2;margin:0;text-wrap:balance}
+h1{font-size:1.9rem}h2{font-size:1.5rem}h3{font-size:1.15rem}
+p{margin:.4rem 0}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.top{background:var(--card);border-bottom:2px solid var(--ink)}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1.2rem;padding:.7rem 16px}
+.brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--ink);font-family:var(--disp);font-weight:700;font-size:1.2rem}
+nav{display:flex;gap:.4rem;flex-wrap:wrap}
+nav a{padding:.4rem .9rem;border-radius:10px;text-decoration:none;color:var(--ink);font-weight:700;border:2px solid transparent}
+nav a.on{background:var(--accent);color:var(--accent-ink);border-color:var(--ink)}
+nav a:hover{border-color:var(--ink)}
+.a11y{margin-left:auto;display:flex;gap:.35rem;flex-wrap:wrap}
+.a11y button{min-height:2.2rem;padding:.2rem .6rem;border:2px solid var(--ink);border-radius:9px;background:var(--card);cursor:pointer;font-weight:700}
+.a11y button[aria-pressed="true"]{background:var(--ink);color:var(--card)}
+main{padding:1.4rem 16px 4rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;min-height:2.75rem;padding:.5rem 1.1rem;border-radius:12px;border:2px solid var(--ink);background:var(--card);color:var(--ink);font-weight:800;cursor:pointer;box-shadow:0 3px 0 var(--ink);text-decoration:none}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.brandb{background:var(--brand);color:var(--brand-ink)}
+.btn.small{min-height:2.2rem;padding:.25rem .8rem;font-size:.9rem;box-shadow:0 2px 0 var(--ink)}
+.btn.ghost{background:transparent;box-shadow:none}
+.icon{width:2.2rem;height:2.2rem;border-radius:50%;border:2px solid var(--ink);background:var(--card);cursor:pointer;font-weight:800;line-height:1}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+.row.between{justify-content:space-between}
+.head{display:flex;flex-wrap:wrap;gap:.8rem 1.2rem;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin:.6rem 0 1.1rem}
+.chip{padding:.3rem .8rem;border-radius:99px;border:2px solid var(--ink);background:var(--card);cursor:pointer;font-weight:600;font-size:.9rem}
+.chip.on{background:var(--ink);color:var(--card)}
+input[type=text],input[type=search],input[type=number],textarea{width:100%;padding:.6rem .75rem;border:2px solid var(--ink);border-radius:10px;background:var(--card);color:var(--ink)}
+textarea{resize:vertical;line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem}
+.card{background:var(--card);border:2px solid var(--ink);border-left:12px solid var(--tc,var(--brand));border-radius:14px;padding:1rem;display:flex;flex-direction:column;gap:.5rem;box-shadow:0 4px 0 var(--ink)}
+.card .tag{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2)}
+.card .meta{color:var(--ink2);font-size:.9rem;margin:0}
+.acts{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:auto;padding-top:.5rem}
+.empty{padding:2rem;text-align:center;color:var(--ink2);grid-column:1/-1}
+.panel{background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:1.2rem;box-shadow:0 4px 0 var(--ink)}
+.lbl{display:block;font-weight:800;margin:.8rem 0 .3rem}
+.hint{color:var(--ink2);font-size:.92rem;margin:.2rem 0 .5rem}
+.hint code,.guide code{background:var(--hl);padding:.05rem .35rem;border-radius:5px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;color:var(--ink)}
+.count{font-weight:700;color:var(--ink2);font-size:.9rem}
+.steps{display:flex;gap:.5rem;flex-wrap:wrap;list-style:none;padding:0;margin:0 0 1.2rem;counter-reset:s}
+.steps li{counter-increment:s;padding:.35rem .9rem;border:2px solid var(--line);border-radius:99px;font-weight:700;color:var(--ink2);background:var(--card)}
+.steps li::before{content:counter(s) ". "}
+.steps li.cur{border-color:var(--ink);background:var(--accent);color:var(--accent-ink)}
+.types{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem}
+.tcard{text-align:left;background:var(--card);border:2px solid var(--ink);border-top:10px solid var(--tc);border-radius:14px;padding:1rem;cursor:pointer;box-shadow:0 4px 0 var(--ink);display:flex;flex-direction:column;gap:.35rem}
+.tcard:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
+.tcard small{color:var(--ink2);font-size:.88rem}
+fieldset.qbox{border:2px solid var(--ink);border-radius:12px;margin:0 0 1rem;padding:.8rem;background:var(--card)}
+.qbox legend{font-weight:800;padding:0 .4rem}
+.optrow{display:flex;gap:.5rem;align-items:center;margin:.4rem 0}
+.optrow input[type=checkbox]{width:1.5rem;height:1.5rem;flex:none;accent-color:var(--ok)}
+.chk{display:flex;gap:.5rem;align-items:center;margin:.35rem 0;font-weight:600}
+.chk input{width:1.3rem;height:1.3rem;accent-color:var(--brand)}
+.optsbox{display:flex;gap:.8rem 1.6rem;flex-wrap:wrap;margin-top:.6rem}
+.numf{display:flex;flex-direction:column;gap:.2rem;font-weight:700;font-size:.9rem;width:7rem}
+.stagewrap{max-width:760px;margin:0 auto}
+.prog{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem;font-weight:800}
+.track{flex:1;height:.8rem;border:2px solid var(--ink);border-radius:99px;background:var(--card);overflow:hidden}
+.track i{display:block;height:100%;background:var(--accent)}
+.stage{background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:1.3rem;box-shadow:0 4px 0 var(--ink)}
+.qtext{font-family:var(--disp);font-size:1.45rem;font-weight:700;margin:.2rem 0 1rem}
+.opts{display:grid;gap:.7rem}
+.opt{display:flex;gap:.9rem;align-items:center;text-align:left;width:100%;min-height:3.4rem;padding:.6rem .9rem;border:2px solid var(--ink);border-radius:12px;background:var(--card);cursor:pointer;font-size:1.15rem;font-weight:600}
+.opt .ltr{display:grid;place-items:center;width:2.1rem;height:2.1rem;border-radius:50%;border:2px solid var(--ink);font-weight:800;flex:none;font-size:.95rem}
+.opt:hover:not(:disabled){background:var(--hl)}
+.opt.sel{background:var(--hl);border-width:3px}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}
+.opt.no{background:var(--nobg);border-color:var(--no);opacity:.85}
+.fb{min-height:1.8rem;margin:.9rem 0 .4rem;font-weight:800}
+.fb.good{color:var(--ok)}.fb.soft{color:var(--no)}
+.sentence{font-size:1.5rem;line-height:2.6;margin:.6rem 0}
+.blank{display:inline-block;min-width:5rem;border:0;border-bottom:4px solid var(--ink);background:var(--hl);border-radius:6px 6px 0 0;padding:.1rem .5rem;font-size:1.3rem;font-weight:800;text-align:center;color:var(--ink);width:auto;cursor:pointer;line-height:1.5}
+input.blank{cursor:text}
+.blank.ok{background:var(--okbg);border-color:var(--ok)}
+.blank.no{background:var(--nobg);border-color:var(--no)}
+.bank{display:flex;gap:.6rem;flex-wrap:wrap;margin:.8rem 0}
+.word{font-size:1.15rem;padding:.5rem 1rem;border-radius:10px}
+.word.used{opacity:.35}
+.ans{margin-top:1rem;padding:.9rem 1rem;border-left:8px solid var(--brand);background:var(--hl);border-radius:6px}
+.found{display:flex;gap:.4rem;flex-wrap:wrap;margin:.4rem 0}
+.found span{padding:.15rem .6rem;border-radius:99px;border:2px solid var(--ok);background:var(--okbg);font-weight:700;font-size:.9rem}
+.found span.miss{border-color:var(--line);background:transparent;color:var(--ink2)}
+.xwrap{overflow-x:auto;padding-bottom:.5rem}
+.xgrid{display:grid;grid-template-columns:repeat(var(--cols),2.5rem);gap:2px;width:max-content;margin:0 auto}
+.xcell{position:relative;width:2.5rem;height:2.5rem;background:var(--card);border:2px solid var(--ink)}
+.xcell.void{background:transparent;border:0}
+.xcell input{width:100%;height:100%;border:0;background:transparent;text-align:center;font:800 1.25rem var(--body);text-transform:uppercase;color:var(--ink);padding:.6rem 0 0;border-radius:0}
+.xcell .xl{display:grid;place-items:center;width:100%;height:100%;font:800 1.25rem var(--body);padding-top:.5rem}
+.xn{position:absolute;top:0;left:2px;font-size:.65rem;font-weight:800;pointer-events:none;color:var(--ink2)}
+.xcell.hl{background:var(--hl)}
+.xcell.cur{box-shadow:inset 0 0 0 3px var(--brand)}
+.xcell.ok{background:var(--okbg)}
+.xcell.no{background:var(--nobg)}
+.clue-now{font-weight:800;min-height:3rem;margin:.4rem 0 .8rem;padding:.6rem .8rem;background:var(--hl);border-radius:8px;border:2px solid var(--ink)}
+.clues{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1rem}
+.clues h3{margin-bottom:.4rem}
+.clues ol{list-style:none;padding:0;margin:0}
+.clues li button{border:0;background:none;text-align:left;cursor:pointer;padding:.3rem .2rem;width:100%;border-radius:6px}
+.clues li button:hover{background:var(--hl)}
+.clues b{display:inline-block;min-width:1.7rem}
+.wheel-wrap{position:relative;width:min(100%,420px);margin:.8rem auto}
+.wheel{width:100%;height:auto;display:block}
+.pointer{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:32px solid var(--ink);filter:drop-shadow(0 2px 0 var(--card))}
+.pick{font-family:var(--disp);font-size:2.2rem;font-weight:700;text-align:center;margin:.4rem 0}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(7rem,1fr));gap:.7rem}
+.mcard{min-height:5.5rem;padding:.5rem;border:2px solid var(--ink);border-radius:12px;background:var(--brand);color:var(--brand-ink);font-size:1.5rem;font-weight:800;cursor:pointer;box-shadow:0 3px 0 var(--ink);overflow-wrap:anywhere}
+.mcard.up{background:var(--card);color:var(--ink);font-size:1.1rem}
+.mcard.done{background:var(--okbg);color:var(--ink);border-color:var(--ok);box-shadow:none}
+.math{font-family:var(--disp);font-size:3rem;font-weight:700;text-align:center;margin:1rem 0}
+.math input{width:6rem;font:inherit;text-align:center;display:inline-block;padding:.1rem}
+.end{text-align:center;padding:1.5rem 1rem}
+.end h2{font-size:2rem;margin-bottom:.6rem}
+.end .big{font-size:1.4rem;font-weight:800}
+.end .row{justify-content:center;margin-top:1.2rem}
+.warn{color:var(--no);font-weight:700}
+.guide section{margin-bottom:1.6rem}
+.guide ol,.guide ul{padding-left:1.3rem}
+.guide li{margin:.3rem 0}
+.guide table{border-collapse:collapse;width:100%;font-size:.95rem}
+.guide th,.guide td{border:2px solid var(--line);padding:.5rem .6rem;text-align:left;vertical-align:top}
+.guide th{background:var(--hl)}
+.scroll{overflow-x:auto}
+pre{background:var(--ink);color:var(--paper);padding:1rem;border-radius:10px;overflow-x:auto;font-size:.85rem;line-height:1.5}
+.swatch{display:inline-block;width:.8rem;height:.8rem;border-radius:50%;margin-right:.4rem;background:var(--tc)}
+.emb .top{display:none}
+.emb main{padding-top:.8rem;padding-bottom:2rem}
+.pct{font-family:var(--disp);font-size:3.2rem;font-weight:700;margin:.2rem 0}
+.review{list-style:none;padding:0;margin:.8rem 0 0;text-align:left;display:grid;gap:.7rem}
+.review li{border:2px solid var(--line);border-radius:12px;padding:.7rem .9rem;background:var(--card)}
+.review li.ok{border-color:var(--ok);background:var(--okbg)}
+.review li.no{border-color:var(--no);background:var(--nobg)}
+.rv-h{display:flex;gap:.6rem;font-weight:800;align-items:flex-start}
+.rv-i{flex:none;width:1.6rem;height:1.6rem;border-radius:50%;display:grid;place-items:center;border:2px solid currentColor;font-size:.9rem}
+.rv-w{font-size:.95rem;margin:.3rem 0 0 2.2rem}
+.why{margin-top:.6rem;padding:.6rem .8rem;border-left:6px solid var(--brand);background:var(--hl);border-radius:6px;font-weight:600}
+#toast{position:fixed;left:50%;bottom:1.2rem;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:.6rem 1.2rem;border-radius:99px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .25s;z-index:10;max-width:90%}
+#toast.show{opacity:1}
+dialog{border:2px solid var(--ink);border-radius:16px;background:var(--card);color:var(--ink);width:calc(100% - 32px);max-width:640px;padding:1.2rem}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+@media (max-width:560px){h1{font-size:1.55rem}.sentence{font-size:1.25rem}.math{font-size:2.3rem}.a11y{margin-left:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="brand" href="#library" aria-label="Εργαστήρι Δραστηριοτήτων">
+    <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="15" fill="#F2A900" stroke="currentColor" stroke-width="2"/><path d="M17 17 L17 2 A15 15 0 0 1 30 24.5 Z" fill="#1B4B9B"/><path d="M17 17 L4 24.5 A15 15 0 0 1 17 2 Z" fill="#0B7A5E"/><circle cx="17" cy="17" r="3.5" fill="#fff" stroke="currentColor" stroke-width="2"/></svg>
+    <span>Εργαστήρι</span></a>
+  <nav id="nav" aria-label="Κύριο μενού"></nav>
+  <div class="a11y" id="a11y" role="group" aria-label="Προσαρμογή προβολής"></div>
+</div></header>
+<main id="app" class="wrap"></main>
+<div id="toast" role="status" aria-live="polite"></div>
+<dialog id="dlg" aria-label="Κοινοποίηση"></dialog>
+
+<script>
+(()=>{
+'use strict';
+
+/* ---------- βοηθητικά ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+function h(tag,props,...kids){
+  const e=document.createElement(tag);
+  for(const k in (props||{})){
+    const v=props[k];
+    if(v==null||v===false)continue;
+    if(k==='class')e.className=v;
+    else if(k==='style')e.style.cssText=v;
+    else if(k==='html')e.innerHTML=v;
+    else if(k==='value'||k==='checked')e[k]=v;
+    else if(k.startsWith('on'))e.addEventListener(k.slice(2),v);
+    else e.setAttribute(k,v===true?'':v);
+  }
+  for(const c of kids.flat(3)){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(c));}
+  return e;
+}
+const stripAcc=s=>String(s).normalize('NFD').replace(/[̀-ͯ]/g,'');
+const norm=s=>stripAcc(s).toLowerCase().replace(/ς/g,'σ').trim().replace(/\s+/g,' ');
+const normW=s=>stripAcc(s).toUpperCase().replace(/[^Α-ΩA-Z0-9]/g,'');
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const uid=()=>Math.random().toString(36).slice(2,9);
+const clone=o=>JSON.parse(JSON.stringify(o));
+const lines=t=>String(t||'').split('\n').map(s=>s.trim()).filter(Boolean);
+const pairs=t=>lines(t).map(l=>l.split('|').map(x=>x.trim()));
+
+const mem={};
+const store={
+  get(k){try{const v=localStorage.getItem(k);if(v)return JSON.parse(v);}catch(e){}return mem[k]??null;},
+  set(k,v){mem[k]=v;try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+};
+let toastT;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2600);}
+const EMB=new URLSearchParams(location.search).get('embed');
+if(EMB){document.body.classList.add('emb');document.documentElement.setAttribute('data-theme','light');}
+const post=m=>{try{parent.postMessage(Object.assign({src:'ergastiri'},m),location.origin);}catch(e){}};
+const canSpeak='speechSynthesis' in window;
+function say(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='el-GR';u.rate=.85;speechSynthesis.speak(u);}catch(e){}}
+const listenBtn=t=>canSpeak?h('button',{class:'btn small',type:'button',onclick:()=>say(t)},'Ακούστε'):null;
+
+/* ---------- ρυθμίσεις προσβασιμότητας ---------- */
+const S=Object.assign({fs:0,hc:false,sp:false},store.get('ergastiri.set')||{});
+function applySet(){
+  document.documentElement.style.setProperty('--fs',[17,20,23][S.fs]+'px');
+  document.documentElement.classList.toggle('hc',S.hc);
+  document.body.classList.toggle('sp',S.sp);
+  store.set('ergastiri.set',S);
+  drawA11y();
+}
+function drawA11y(){
+  $('#a11y').replaceChildren(
+    h('button',{type:'button','aria-label':'Μικρότερα γράμματα',onclick:()=>{S.fs=Math.max(0,S.fs-1);applySet();}},'Α−'),
+    h('button',{type:'button','aria-label':'Μεγαλύτερα γράμματα',onclick:()=>{S.fs=Math.min(2,S.fs+1);applySet();}},'Α+'),
+    h('button',{type:'button','aria-pressed':S.hc,onclick:()=>{S.hc=!S.hc;applySet();}},'Αντίθεση'),
+    h('button',{type:'button','aria-pressed':S.sp,onclick:()=>{S.sp=!S.sp;applySet();}},'Διάστιχο')
+  );
+}
+
+/* ---------- μητρώο τύπων δραστηριοτήτων ---------- */
+const TYPES={};
+function registerType(id,def){TYPES[id]=def;}
+
+/* σκελετός για παιχνίδια με σειρά ερωτήσεων */
+function seqPlay(root,items,renderItem,api){
+  let i=0,score=0;const reviews=[];
+  const bar=h('div',{class:'prog'});
+  const stage=h('div',{class:'stage'});
+  root.append(bar,stage);
+  function show(){
+    if(i>=items.length){api.finish(score,items.length,'',reviews);return;}
+    bar.replaceChildren(h('span',{},(i+1)+' / '+items.length),h('div',{class:'track'},h('i',{style:'width:'+(i/items.length*100)+'%'})));
+    stage.replaceChildren();
+    renderItem(stage,items[i],(first,rev)=>{if(first)score++;if(rev)reviews.push(Object.assign({ok:!!first},rev));i++;show();},i);
+  }
+  if(!items.length){root.append(h('p',{class:'warn'},'Η δραστηριότητα δεν έχει αρκετό περιεχόμενο.'));return;}
+  show();
+}
+function optionFields(fields,d){
+  return h('div',{class:'optsbox'},fields.map(f=>{
+    if(f.type==='check'){
+      return h('label',{class:'chk'},h('input',{type:'checkbox',checked:!!d[f.k],onchange:e=>{d[f.k]=e.target.checked;}}),f.label);
+    }
+    return h('label',{class:'numf'},f.label,h('input',{type:'number',value:d[f.k]??'',min:f.min,max:f.max,oninput:e=>{d[f.k]=e.target.value===''?'':+e.target.value;}}));
+  }));
+}
+function textEditor(cfg){
+  return (box,d)=>{
+    const ta=h('textarea',{id:'ta-main',rows:cfg.rows||9,spellcheck:'false',placeholder:cfg.placeholder||''});
+    ta.value=d.text||'';
+    const cnt=h('span',{class:'count'});
+    const extra=h('div');
+    const upd=()=>{d.text=ta.value;cnt.textContent=cfg.count(d)+' '+cfg.unit;if(cfg.onChange)cfg.onChange(extra,d);};
+    ta.addEventListener('input',upd);
+    box.append(h('label',{for:'ta-main',class:'lbl'},cfg.label),h('p',{class:'hint',html:cfg.hint}),ta,h('div',{class:'row between'},cnt),extra,cfg.fields?optionFields(cfg.fields,d):null);
+    upd();
+  };
+}
+
+/* ---------- 1. Πολλαπλής επιλογής ---------- */
+const newQ=()=>({q:'',why:'',options:[{t:'',ok:true},{t:'',ok:false},{t:'',ok:false}]});
+function mcEditor(box,d){
+  const wrap=h('div');
+  function draw(){
+    wrap.replaceChildren(
+      ...d.questions.map((q,qi)=>h('fieldset',{class:'qbox'},
+        h('legend',{},'Ερώτηση '+(qi+1)),
+        h('textarea',{rows:2,'aria-label':'Κείμενο ερώτησης',placeholder:'Γράψε την ερώτηση',oninput:e=>{q.q=e.target.value;}},q.q),
+        h('p',{class:'hint'},'Τσέκαρε το κουτάκι δίπλα στις σωστές απαντήσεις.'),
+        q.options.map((o,oi)=>h('div',{class:'optrow'},
+          h('input',{type:'checkbox',checked:o.ok,'aria-label':'Σωστή απάντηση',onchange:e=>{o.ok=e.target.checked;}}),
+          h('input',{type:'text',value:o.t,placeholder:'Επιλογή '+(oi+1),'aria-label':'Επιλογή '+(oi+1),oninput:e=>{o.t=e.target.value;}}),
+          h('button',{class:'icon',type:'button','aria-label':'Διαγραφή επιλογής',onclick:()=>{q.options.splice(oi,1);draw();}},'×')
+        )),
+        h('input',{type:'text',value:q.why||'','aria-label':'Εξήγηση',placeholder:'Εξήγηση που θα δει το παιδί μετά την απάντηση (προαιρετικά)',oninput:e=>{q.why=e.target.value;}}),
+        h('div',{class:'row',style:'margin-top:.6rem'},
+          h('button',{class:'btn small',type:'button',onclick:()=>{q.options.push({t:'',ok:false});draw();}},'+ Επιλογή'),
+          h('button',{class:'btn small ghost',type:'button',onclick:()=>{d.questions.splice(qi,1);draw();}},'Διαγραφή ερώτησης'))
+      )),
+      h('button',{class:'btn',type:'button',onclick:()=>{d.questions.push(newQ());draw();}},'+ Νέα ερώτηση')
+    );
+  }
+  box.append(h('p',{class:'hint'},'Αν τσεκάρεις περισσότερες από μία σωστές απαντήσεις, ο μαθητής θα πρέπει να τις επιλέξει όλες.'),wrap,
+    optionFields([{k:'shuffleQ',type:'check',label:'Ανακάτεμα ερωτήσεων'},{k:'shuffleO',type:'check',label:'Ανακάτεμα επιλογών'},{k:'test',type:'check',label:'Λειτουργία τεστ (μία προσπάθεια, φαίνεται η σωστή απάντηση)'}],d));
+  draw();
+}
+function mcPlay(root,d,api){
+  let qs=d.questions.map(q=>({q:q.q,why:q.why||'',options:q.options.filter(o=>o.t.trim())})).filter(q=>q.q.trim()&&q.options.length>=2&&q.options.some(o=>o.ok));
+  if(d.shuffleQ)qs=shuffle(qs);
+  seqPlay(root,qs,(st,q,next)=>{
+    const opts=d.shuffleO?shuffle(q.options):q.options;
+    const multi=opts.filter(o=>o.ok).length>1;
+    const correctTxt=opts.filter(o=>o.ok).map(o=>o.t).join(', ');
+    let tried=false,first=null;const sel=new Set();
+    const fb=h('div',{class:'fb',role:'status','aria-live':'polite'});
+    const why=h('div',{class:'why',hidden:true},q.why);
+    const showWhy=()=>{if(q.why)why.hidden=false;};
+    const nxt=h('button',{class:'btn primary',type:'button',hidden:true,onclick:()=>next(!tried,{q:q.q,yours:first||correctTxt,correct:correctTxt,why:q.why})},'Επόμενο');
+    const lock=()=>btns.forEach(b=>{b.disabled=true;});
+    const reveal=()=>{btns.forEach((b,i)=>{if(opts[i].ok)b.classList.add('ok');});lock();};
+    const done=(msg,good)=>{fb.textContent=msg;fb.className='fb '+(good?'good':'soft');showWhy();nxt.hidden=false;nxt.focus();};
+    const btns=opts.map((o,i)=>{
+      const b=h('button',{class:'opt',type:'button','aria-pressed':'false'},h('span',{class:'ltr'},'ΑΒΓΔΕΖΗΘ'[i]||String(i+1)),h('span',{},o.t));
+      b.addEventListener('click',()=>{
+        if(multi){
+          if(sel.has(i))sel.delete(i);else sel.add(i);
+          b.classList.toggle('sel',sel.has(i));b.setAttribute('aria-pressed',sel.has(i));return;
+        }
+        if(first===null)first=o.t;
+        if(o.ok){reveal();done(tried?'Σωστά, τώρα το βρήκες!':'Μπράβο! Σωστή απάντηση.',true);}
+        else if(d.test){b.classList.add('no');tried=true;reveal();done('Λάθος. Η σωστή απάντηση είναι: '+correctTxt,false);}
+        else{b.classList.add('no');b.disabled=true;tried=true;fb.textContent='Δεν πειράζει, δοκίμασε ξανά.';fb.className='fb soft';}
+      });
+      return b;
+    });
+    const chk=h('button',{class:'btn brandb',type:'button',hidden:!multi,onclick:()=>{
+      if(first===null)first=[...sel].sort().map(i=>opts[i].t).join(', ')||'(καμία)';
+      const right=opts.every((o,i)=>!!o.ok===sel.has(i));
+      if(right){reveal();chk.hidden=true;done(tried?'Σωστά, τώρα τις βρήκες!':'Μπράβο! Βρήκες όλες τις σωστές.',true);}
+      else if(d.test){tried=true;btns.forEach((b,i)=>{if(sel.has(i)&&!opts[i].ok)b.classList.add('no');});reveal();chk.hidden=true;done('Όχι ακριβώς. Οι σωστές είναι: '+correctTxt,false);}
+      else{tried=true;fb.textContent='Όχι ακόμα. Διάβασε ξανά και διάλεξε όλες τις σωστές.';fb.className='fb soft';}
+    }},'Έλεγχος');
+    st.append(h('div',{class:'row between'},h('span',{class:'count'},multi?'Διάλεξε όλες τις σωστές':'Διάλεξε μία απάντηση'),listenBtn(q.q)),
+      h('p',{class:'qtext'},q.q),h('div',{class:'opts'},btns),fb,why,h('div',{class:'row'},chk,nxt));
+  },api);
+}
+registerType('mc',{
+  label:'Πολλαπλής επιλογής',color:'#1B4B9B',
+  blurb:'Ερώτηση με 2 έως 8 επιλογές. Μία ή περισσότερες σωστές.',
+  format:'Φόρμα με κουτάκια (δεν γράφεται κείμενο μορφής)',
+  unit:'ερωτήσεις',count:d=>d.questions.length,
+  blank:()=>({questions:[newQ()],shuffleQ:false,shuffleO:false,test:false}),
+  sampleTitle:'Ζώα της φάρμας',sampleTag:'Δημοτικό · Μελέτη',
+  sample:()=>({shuffleQ:false,shuffleO:true,questions:[
+    {q:'Ποιο ζώο μας δίνει γάλα;',options:[{t:'Αγελάδα',ok:true},{t:'Κότα',ok:false},{t:'Άλογο',ok:false},{t:'Ψάρι',ok:false}]},
+    {q:'Ποια από αυτά έχουν φτερά;',options:[{t:'Κότα',ok:true},{t:'Πάπια',ok:true},{t:'Γάτα',ok:false},{t:'Γουρούνι',ok:false}]},
+    {q:'Πόσα πόδια έχει ένα πρόβατο;',options:[{t:'2',ok:false},{t:'4',ok:true},{t:'6',ok:false}]}]}),
+  editor:mcEditor,
+  validate:d=>d.questions.some(q=>q.q.trim()&&q.options.filter(o=>o.t.trim()).length>=2&&q.options.some(o=>o.ok&&o.t.trim()))?null:'Χρειάζεται τουλάχιστον μία ερώτηση με δύο επιλογές και μία σωστή απάντηση.',
+  play:mcPlay
+});
+
+/* ---------- 2. Συμπλήρωση κενού ---------- */
+function parseFill(text){
+  return lines(text).map(line=>{
+    const parts=[];let last=0;
+    line.replace(/\[([^\]]+)\]/g,(m,a,idx)=>{
+      parts.push({t:line.slice(last,idx)});
+      parts.push({blank:a.split('|').map(x=>x.trim()).filter(Boolean)});
+      last=idx+m.length;return m;
+    });
+    parts.push({t:line.slice(last)});
+    return parts;
+  }).filter(p=>p.some(x=>x.blank&&x.blank.length));
+}
+function fillPlay(root,d,api){
+  const bank=!!d.bank;
+  let items=parseFill(d.text);
+  if(d.shuffle)items=shuffle(items);
+  seqPlay(root,items,(st,parts,next)=>{
+    let tried=false,first=null;
+    const blanks=[];
+    const sent=h('p',{class:'sentence'});
+    const bankEl=h('div',{class:'bank'});
+    const fb=h('div',{class:'fb',role:'status','aria-live':'polite'});
+    const spoken=parts.map(p=>p.blank?'κενό':p.t).join('');
+    const sentenceTxt=parts.map(p=>p.blank?'____':p.t).join('');
+    const correctTxt=parts.filter(p=>p.blank).map(p=>p.blank[0]).join(', ');
+    parts.forEach(p=>{
+      if(!p.blank){sent.append(p.t);return;}
+      const b={alts:p.blank.map(norm),show:p.blank[0],chip:null};
+      if(bank){
+        b.el=h('button',{class:'blank',type:'button','aria-label':'κενό',onclick:()=>{
+          if(b.chip){b.chip.el.disabled=false;b.chip.el.classList.remove('used');b.chip=null;b.el.textContent='\u00a0\u00a0\u00a0\u00a0';b.el.classList.remove('ok','no');}
+        }},'\u00a0\u00a0\u00a0\u00a0');
+      }else{
+        b.el=h('input',{type:'text',class:'blank',size:Math.max(4,b.show.length+1),autocomplete:'off',autocapitalize:'off',spellcheck:'false','aria-label':'κενό'});
+      }
+      blanks.push(b);sent.append(b.el);
+    });
+    if(bank){
+      shuffle(blanks.map(b=>b.show)).forEach(w=>{
+        const c={w};
+        c.el=h('button',{class:'btn word',type:'button',onclick:()=>{
+          const b=blanks.find(x=>!x.chip);if(!b)return;
+          b.chip=c;b.el.textContent=w;c.el.disabled=true;c.el.classList.add('used');
+        }},w);
+        bankEl.append(c.el);
+      });
+    }
+    const valOf=b=>bank?(b.chip?b.chip.w:''):b.el.value.trim();
+    const lockAll=()=>{blanks.forEach(b=>{if(bank)b.el.disabled=true;else b.el.readOnly=true;});bankEl.querySelectorAll('button').forEach(x=>{x.disabled=true;});};
+    const nxt=h('button',{class:'btn primary',type:'button',hidden:true,onclick:()=>next(!tried,{q:sentenceTxt,yours:first||correctTxt,correct:correctTxt})},'Επόμενο');
+    const chk=h('button',{class:'btn brandb',type:'button',onclick:()=>{
+      if(first===null)first=blanks.map(b=>valOf(b)||'—').join(', ');
+      let ok=true;
+      blanks.forEach(b=>{
+        const v=norm(valOf(b));
+        const good=b.alts.includes(v);
+        b.el.classList.toggle('ok',good);b.el.classList.toggle('no',!good&&v!=='');
+        if(!good)ok=false;
+      });
+      if(ok){fb.textContent=tried?'Σωστά, τώρα το βρήκες!':'Μπράβο! Όλα σωστά.';fb.className='fb good';chk.hidden=true;lockAll();nxt.hidden=false;nxt.focus();}
+      else if(d.test){tried=true;chk.hidden=true;lockAll();fb.textContent='Λάθος. Σωστή απάντηση: '+correctTxt;fb.className='fb soft';nxt.hidden=false;nxt.focus();}
+      else{tried=true;fb.textContent='Σχεδόν! Δες ξανά τα κενά που έχουν χρώμα.';fb.className='fb soft';}
+    }},'Έλεγχος');
+    st.append(h('div',{class:'row between'},h('span',{class:'count'},bank?'Πάτα μια λέξη για να μπει στο κενό':'Γράψε τη λέξη που λείπει'),listenBtn(spoken)),
+      sent,bankEl,fb,h('div',{class:'row'},chk,nxt));
+  },api);
+}
+registerType('fill',{
+  label:'Συμπλήρωση κενού',color:'#0B7A5E',
+  blurb:'Προτάσεις με λέξεις που λείπουν. Με τράπεζα λέξεων ή με πληκτρολόγηση.',
+  format:'Μία πρόταση ανά γραμμή. Η λέξη που λείπει μπαίνει σε [αγκύλες]. Δεκτές εναλλακτικές: [λέξη|άλλη λέξη]',
+  unit:'προτάσεις',count:d=>parseFill(d.text).length,
+  blank:()=>({text:'',bank:true,shuffle:false}),
+  sampleTitle:'Συμπλήρωσε τη λέξη',sampleTag:'Δημοτικό · Γλώσσα',
+  sample:()=>({bank:true,shuffle:false,text:'Η Αθήνα είναι η [πρωτεύουσα] της Ελλάδας.\nΤο καλοκαίρι κάνει [ζέστη|πολλή ζέστη].\nΟ [ήλιος] λάμπει το πρωί.\nΟ Γιάννης πίνει [γάλα] με τα δημητριακά του.'}),
+  editor:textEditor({label:'Οι προτάσεις σου',rows:8,unit:'προτάσεις',count:d=>parseFill(d.text).length,
+    placeholder:'Η Αθήνα είναι η [πρωτεύουσα] της Ελλάδας.',
+    hint:'Γράψε <b>μία πρόταση ανά γραμμή</b> και βάλε τη λέξη που λείπει μέσα σε <code>[αγκύλες]</code>. Αν δέχεσαι περισσότερες σωστές απαντήσεις: <code>[ζέστη|πολλή ζέστη]</code>. Δεν μετράνε οι τόνοι.',
+    fields:[{k:'bank',type:'check',label:'Τράπεζα λέξεων (πάτημα αντί για γράψιμο)'},{k:'shuffle',type:'check',label:'Ανακάτεμα προτάσεων'},{k:'test',type:'check',label:'Λειτουργία τεστ (μία προσπάθεια, φαίνεται η σωστή απάντηση)'}]}),
+  validate:d=>parseFill(d.text).length?null:'Γράψε τουλάχιστον μία πρόταση με λέξη σε [αγκύλες].',
+  play:fillPlay
+});
+
+/* ---------- 3. Ανοιχτού τύπου ---------- */
+const openItems=t=>pairs(t).filter(p=>p[0]).map(p=>({q:p[0],a:p[1]||'',kw:(p[2]||'').split(',').map(x=>x.trim()).filter(Boolean)}));
+function openPlay(root,d,api){
+  seqPlay(root,openItems(d.text),(st,it,next)=>{
+    const ta=h('textarea',{rows:4,placeholder:'Γράψε εδώ την απάντησή σου...','aria-label':'Η απάντησή σου'});
+    const out=h('div');
+    const chk=h('button',{class:'btn brandb',type:'button',onclick:()=>{
+      chk.hidden=true;ta.readOnly=true;
+      const txt=norm(ta.value);
+      if(it.kw.length){
+        const f=it.kw.filter(k=>txt.includes(norm(k)));
+        out.append(h('p',{class:'lbl'},'Βασικές λέξεις που έγραψες: '+f.length+' από '+it.kw.length),
+          h('div',{class:'found'},it.kw.map(k=>h('span',{class:f.includes(k)?'':'miss'},k))));
+      }
+      if(it.a)out.append(h('div',{class:'ans'},h('b',{},'Πρότυπη απάντηση: '),it.a));
+      out.append(h('p',{class:'lbl'},'Πώς σου φάνηκε η απάντησή σου;'),
+        h('div',{class:'row'},
+          h('button',{class:'btn primary',type:'button',onclick:()=>next(true,{q:it.q,yours:ta.value.trim()||'(χωρίς απάντηση)',correct:it.a})},'Ήταν σωστή'),
+          h('button',{class:'btn',type:'button',onclick:()=>next(false,{q:it.q,yours:ta.value.trim()||'(χωρίς απάντηση)',correct:it.a})},'Θα την ξαναδώ')));
+    }},it.a||it.kw.length?'Δες την απάντηση':'Έτοιμος');
+    st.append(h('div',{class:'row between'},h('span',{class:'count'},'Ερώτηση ανοιχτού τύπου'),listenBtn(it.q)),h('p',{class:'qtext'},it.q),ta,h('div',{class:'row',style:'margin-top:.8rem'},chk),out);
+  },api);
+}
+registerType('open',{
+  label:'Ανοιχτού τύπου',color:'#7B4FB3',
+  blurb:'Ο μαθητής γράφει ελεύθερα, βλέπει την πρότυπη απάντηση και κρίνει μόνος του.',
+  format:'Ερώτηση | Πρότυπη απάντηση | λέξεις-κλειδιά χωρισμένες με κόμμα (τα δύο τελευταία προαιρετικά)',
+  unit:'ερωτήσεις',count:d=>openItems(d.text).length,
+  blank:()=>({text:''}),
+  sampleTitle:'Η εβδομάδα και οι εποχές',sampleTag:'Δημοτικό · Γλώσσα',
+  sample:()=>({text:'Πόσες μέρες έχει η εβδομάδα; | Η εβδομάδα έχει επτά μέρες. | επτά, 7\nΠες μου τις εποχές του χρόνου. | Άνοιξη, καλοκαίρι, φθινόπωρο και χειμώνας. | άνοιξη, καλοκαίρι, φθινόπωρο, χειμώνας\nΓιατί φοράμε μπουφάν τον χειμώνα; | Γιατί κάνει κρύο. | κρύο'}),
+  editor:textEditor({label:'Οι ερωτήσεις σου',rows:8,unit:'ερωτήσεις',count:d=>openItems(d.text).length,
+    placeholder:'Πόσες μέρες έχει η εβδομάδα; | Επτά μέρες. | επτά, 7',
+    hint:'Μία ερώτηση ανά γραμμή, με κάθετες γραμμές <code>|</code> ανάμεσα στα μέρη: <code>Ερώτηση | Πρότυπη απάντηση | λέξη1, λέξη2</code>. Οι λέξεις-κλειδιά είναι προαιρετικές και δείχνουν στο παιδί ποιες βασικές λέξεις βρήκε.'}),
+  validate:d=>openItems(d.text).length?null:'Γράψε τουλάχιστον μία ερώτηση.',
+  play:openPlay
+});
+
+/* ---------- 4. Σταυρόλεξο ---------- */
+function crossEntries(text){
+  const seen=new Set();
+  return pairs(text).map(p=>({raw:p[0],w:normW(p[0]||''),clue:p[1]||''})).filter(e=>{
+    if(e.w.length<2||seen.has(e.w))return false;seen.add(e.w);return true;});
+}
+function genCross(entries){
+  let best=null;
+  for(let t=0;t<60;t++){
+    const order=entries.slice().sort((a,b)=>b.w.length-a.w.length+(t?(Math.random()-.5)*4:0));
+    const g=new Map(),placed=[],left=[];
+    const get=(r,c)=>g.get(r+','+c);
+    const fits=(w,r,c,dir)=>{
+      const dr=dir==='d'?1:0,dc=dir==='a'?1:0;
+      if(get(r-dr,c-dc)||get(r+dr*w.length,c+dc*w.length))return -1;
+      let inter=0;
+      for(let i=0;i<w.length;i++){
+        const rr=r+dr*i,cc=c+dc*i,cell=get(rr,cc);
+        if(cell){if(cell.ch!==w[i]||cell[dir])return -1;inter++;}
+        else if(get(rr+dc,cc+dr)||get(rr-dc,cc-dr))return -1;
+      }
+      return inter;
+    };
+    const put=(e,r,c,dir)=>{
+      const dr=dir==='d'?1:0,dc=dir==='a'?1:0;
+      for(let i=0;i<e.w.length;i++){
+        const k=(r+dr*i)+','+(c+dc*i);
+        const cell=g.get(k)||{ch:e.w[i]};cell[dir]=true;g.set(k,cell);
+      }
+      placed.push({e,r,c,dir});
+    };
+    order.forEach(e=>{
+      if(!placed.length){put(e,0,0,'a');return;}
+      let cand=[],bi=0;
+      for(const [k,cell] of g){
+        const [R,C]=k.split(',').map(Number);
+        for(let i=0;i<e.w.length;i++){
+          if(e.w[i]!==cell.ch)continue;
+          for(const dir of ['a','d']){
+            const r=dir==='d'?R-i:R,c=dir==='a'?C-i:C;
+            const n=fits(e.w,r,c,dir);
+            if(n>0){if(n>bi){bi=n;cand=[[r,c,dir]];}else if(n===bi)cand.push([r,c,dir]);}
+          }
+        }
+      }
+      if(cand.length){const [r,c,dir]=cand[Math.floor(Math.random()*cand.length)];put(e,r,c,dir);}
+      else left.push(e);
+    });
+    let r0=1e9,c0=1e9,r1=-1e9,c1=-1e9;
+    g.forEach((_,k)=>{const [r,c]=k.split(',').map(Number);r0=Math.min(r0,r);c0=Math.min(c0,c);r1=Math.max(r1,r);c1=Math.max(c1,c);});
+    const rows=r1-r0+1,cols=c1-c0+1;
+    const score=placed.length*1000-rows*cols-Math.abs(rows-cols)*3;
+    if(!best||score>best.score)best={score,placed,left,g,r0,c0,rows,cols};
+  }
+  const cells=new Map();
+  best.g.forEach((cell,k)=>{const [r,c]=k.split(',').map(Number);cells.set((r-best.r0)+','+(c-best.c0),cell.ch);});
+  const words=best.placed.map(p=>{
+    const dr=p.dir==='d'?1:0,dc=p.dir==='a'?1:0,r=p.e.w.length,keys=[];
+    for(let i=0;i<r;i++)keys.push((p.r-best.r0+dr*i)+','+(p.c-best.c0+dc*i));
+    return {w:p.e.w,clue:p.e.clue,dir:p.dir,r:p.r-best.r0,c:p.c-best.c0,keys};
+  });
+  const sorted=words.slice().sort((a,b)=>a.r-b.r||a.c-b.c);
+  const nums=new Map();let n=0;
+  sorted.forEach(w=>{const k=w.r+','+w.c;if(!nums.has(k))nums.set(k,++n);w.num=nums.get(k);});
+  return {cells,words,unplaced:best.left,rows:best.rows,cols:best.cols,nums};
+}
+function crossStatic(cw){
+  const grid=h('div',{class:'xgrid',style:'--cols:'+cw.cols});
+  for(let r=0;r<cw.rows;r++)for(let c=0;c<cw.cols;c++){
+    const k=r+','+c,ch=cw.cells.get(k);
+    grid.append(ch?h('div',{class:'xcell'},cw.nums.has(k)?h('b',{class:'xn'},cw.nums.get(k)):null,h('span',{class:'xl'},ch)):h('div',{class:'xcell void'}));
+  }
+  return h('div',{class:'xwrap'},grid);
+}
+function crossPlay(root,d,api){
+  const entries=crossEntries(d.text);
+  if(entries.length<2){root.append(h('p',{class:'warn'},'Χρειάζονται τουλάχιστον δύο λέξεις.'));return;}
+  const cw=genCross(entries);
+  const info=h('div',{class:'clue-now',role:'status','aria-live':'polite'},'Πάτα σε ένα τετραγωνάκι για να δεις την υπόδειξη.');
+  const fb=h('div',{class:'fb',role:'status','aria-live':'polite'});
+  const grid=h('div',{class:'xgrid',style:'--cols:'+cw.cols});
+  const inputs=new Map(),cellWords=new Map();
+  cw.words.forEach(w=>w.keys.forEach(k=>{const o=cellWords.get(k)||{};o[w.dir]=w;cellWords.set(k,o);}));
+  let dir='a',act=null,curKey=null,hints=0,revealed=false;
+  function setActive(k){
+    const o=cellWords.get(k);if(!o)return;
+    curKey=k;
+    if(!o[dir])dir=o.a?'a':'d';
+    act=o[dir];
+    inputs.forEach(i=>i.parentNode.classList.remove('hl','cur'));
+    act.keys.forEach(x=>inputs.get(x).parentNode.classList.add('hl'));
+    inputs.get(k).parentNode.classList.add('cur');
+    info.textContent=act.num+' '+(act.dir==='a'?'Οριζόντια':'Κάθετα')+': '+(act.clue||'(χωρίς υπόδειξη)')+' ('+act.keys.length+' γράμματα)';
+  }
+  for(let r=0;r<cw.rows;r++)for(let c=0;c<cw.cols;c++){
+    const k=r+','+c;
+    if(!cw.cells.has(k)){grid.append(h('div',{class:'xcell void'}));continue;}
+    const inp=h('input',{type:'text',maxlength:2,autocomplete:'off',autocapitalize:'characters',spellcheck:'false','aria-label':'Γράμμα, γραμμή '+(r+1)+', στήλη '+(c+1)});
+    inputs.set(k,inp);
+    grid.append(h('div',{class:'xcell'},cw.nums.has(k)?h('b',{class:'xn'},cw.nums.get(k)):null,inp));
+    let was=false;
+    inp.addEventListener('mousedown',()=>{was=document.activeElement===inp;});
+    inp.addEventListener('focus',()=>setActive(k));
+    inp.addEventListener('click',()=>{const o=cellWords.get(k);if(was&&o.a&&o.d){dir=dir==='a'?'d':'a';setActive(k);}});
+    inp.addEventListener('input',()=>{
+      const v=normW(inp.value).slice(-1);inp.value=v;inp.parentNode.classList.remove('ok','no');
+      if(v&&act){const nk=act.keys[act.keys.indexOf(k)+1];if(nk)inputs.get(nk).focus();}
+    });
+    inp.addEventListener('keydown',e=>{
+      if(e.key==='Backspace'&&!inp.value&&act){
+        const pk=act.keys[act.keys.indexOf(k)-1];
+        if(pk){inputs.get(pk).focus();inputs.get(pk).value='';e.preventDefault();}
+      }
+      const mv={ArrowRight:[0,1],ArrowLeft:[0,-1],ArrowDown:[1,0],ArrowUp:[-1,0]}[e.key];
+      if(mv){const nk=(r+mv[0])+','+(c+mv[1]);if(inputs.has(nk)){dir=mv[0]?'d':'a';inputs.get(nk).focus();e.preventDefault();}}
+    });
+  }
+  function check(){
+    let all=true;
+    inputs.forEach((inp,k)=>{
+      const cell=inp.parentNode;cell.classList.remove('ok','no');
+      if(!inp.value){all=false;return;}
+      if(inp.value===cw.cells.get(k))cell.classList.add('ok');else{cell.classList.add('no');all=false;}
+    });
+    const okW=cw.words.filter(w=>w.keys.every(k=>inputs.get(k).value===cw.cells.get(k))).length;
+    if(all){
+      fb.textContent='Μπράβο! Συμπλήρωσες όλο το σταυρόλεξο.';fb.className='fb good';
+      fin.hidden=revealed;
+    }else{fb.textContent='Σωστές λέξεις: '+okW+' από '+cw.words.length+'. Τα χρωματισμένα γράμματα θέλουν δεύτερη ματιά.';fb.className='fb soft';}
+  }
+  const fin=h('button',{class:'btn primary',type:'button',hidden:true,onclick:()=>api.finish(0,0,'Έλυσες όλο το σταυρόλεξο'+(hints?' με '+hints+' βοήθειες.':' χωρίς βοήθεια.'))},'Τέλος');
+  const hint=h('button',{class:'btn',type:'button',onclick:()=>{
+    if(!curKey){fb.textContent='Πάτα πρώτα σε ένα τετραγωνάκι.';fb.className='fb soft';return;}
+    inputs.get(curKey).value=cw.cells.get(curKey);hints++;check();
+  }},'Βοήθεια: ένα γράμμα');
+  const solve=h('button',{class:'btn ghost',type:'button',onclick:()=>{inputs.forEach((i,k)=>{i.value=cw.cells.get(k);});revealed=true;check();fb.textContent='Αυτή είναι η λύση. Δοκίμασε να παίξεις ξανά!';}},'Δείξε τη λύση');
+  const list=dr=>h('div',{},h('h3',{},dr==='a'?'Οριζόντια':'Κάθετα'),h('ol',{},cw.words.filter(w=>w.dir===dr).sort((a,b)=>a.num-b.num).map(w=>
+    h('li',{},h('button',{type:'button',onclick:()=>{dir=w.dir;inputs.get(w.keys[0]).focus();setActive(w.keys[0]);}},h('b',{},w.num+'.'),w.clue||'(χωρίς υπόδειξη)')))));
+  root.append(h('div',{class:'stage'},info,h('div',{class:'xwrap'},grid),fb,
+    h('div',{class:'row'},h('button',{class:'btn brandb',type:'button',onclick:check},'Έλεγχος'),hint,solve,fin),
+    h('div',{class:'clues'},list('a'),list('d'))));
+}
+registerType('crossword',{
+  label:'Σταυρόλεξο',color:'#C98300',
+  blurb:'Το πλέγμα φτιάχνεται αυτόματα από τις λέξεις και τις υποδείξεις σου.',
+  format:'Λέξη | Υπόδειξη, μία ανά γραμμή',
+  unit:'λέξεις',count:d=>crossEntries(d.text).length,
+  blank:()=>({text:''}),
+  sampleTitle:'Σταυρόλεξο με φρούτα',sampleTag:'Δημοτικό · Γλώσσα',
+  sample:()=>({text:'ΜΗΛΟ | Κόκκινο ή πράσινο φρούτο της μηλιάς\nΠΟΡΤΟΚΑΛΙ | Στρογγυλό φρούτο με πολύ χυμό\nΜΠΑΝΑΝΑ | Κίτρινο και μακρόστενο\nΛΕΜΟΝΙ | Ξινό και κίτρινο\nΑΧΛΑΔΙ | Γλυκό φρούτο με σχήμα σταγόνας\nΡΟΔΙ | Κόκκινο φρούτο με πολλά σποράκια\nΣΥΚΟ | Γλυκό φρούτο του καλοκαιριού'}),
+  editor:textEditor({label:'Οι λέξεις και οι υποδείξεις',rows:9,unit:'λέξεις',count:d=>crossEntries(d.text).length,
+    placeholder:'ΜΗΛΟ | Κόκκινο ή πράσινο φρούτο',
+    hint:'Μία λέξη ανά γραμμή, ύστερα <code>|</code> και η υπόδειξη: <code>ΜΗΛΟ | Κόκκινο ή πράσινο φρούτο</code>. Οι τόνοι και τα πεζά ή κεφαλαία δεν μετράνε. Καλύτερα να έχουν κοινά γράμματα οι λέξεις, ώστε να διασταυρώνονται.',
+    onChange:(box,d)=>{
+      clearTimeout(box._t);
+      box._t=setTimeout(()=>{
+        const en=crossEntries(d.text);
+        if(en.length<2){box.replaceChildren(h('p',{class:'hint'},'Γράψε τουλάχιστον δύο λέξεις για να δεις το πλέγμα.'));return;}
+        const cw=genCross(en);
+        box.replaceChildren(h('p',{class:'lbl'},'Προεπισκόπηση πλέγματος'),crossStatic(cw),
+          cw.unplaced.length?h('p',{class:'warn'},'Δεν χώρεσαν: '+cw.unplaced.map(e=>e.raw).join(', ')+'. Πρόσθεσε λέξεις με κοινά γράμματα.'):h('p',{class:'hint'},'Όλες οι λέξεις χώρεσαν. Σε κάθε παιχνίδι το πλέγμα μπορεί να βγει διαφορετικό.'));
+      },450);
+    }}),
+  validate:d=>{const en=crossEntries(d.text);if(en.length<3)return 'Γράψε τουλάχιστον τρεις λέξεις.';return genCross(en).words.length>=2?null:'Οι λέξεις δεν έχουν κοινά γράμματα και δεν διασταυρώνονται.';},
+  play:crossPlay
+});
+
+/* ---------- 5. Τροχός ---------- */
+const wheelItems=t=>pairs(t).filter(p=>p[0]).map(p=>({label:p[0],q:p[1]||'',a:p[2]||''}));
+const WCOL=['#F2A900','#1B4B9B','#0B7A5E','#D1495B','#7B4FB3','#E4572E','#2A9D8F','#3D5A80'];
+const darkText=c=>{const n=parseInt(c.slice(1),16);return ((n>>16)*0.299+((n>>8)&255)*0.587+(n&255)*0.114)>150;};
+function wheelPlay(root,d,api){
+  let items=wheelItems(d.text);
+  if(items.length<2){root.append(h('p',{class:'warn'},'Χρειάζονται τουλάχιστον δύο τμήματα.'));return;}
+  const SZ=420;
+  const cv=h('canvas',{class:'wheel',width:SZ*2,height:SZ*2,role:'img','aria-label':'Τροχός με '+items.length+' τμήματα'});
+  const ctx=cv.getContext('2d');ctx.scale(2,2);
+  let rot=0,spinning=false,rounds=0,right=0;
+  const result=h('div',{role:'status','aria-live':'polite'});
+  function draw(){
+    const n=items.length,st=Math.PI*2/n,R=SZ/2-8,cx=SZ/2,cy=SZ/2;
+    ctx.clearRect(0,0,SZ,SZ);
+    for(let i=0;i<n;i++){
+      const a0=rot+i*st,a1=a0+st,col=WCOL[i%WCOL.length];
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,a0,a1);ctx.closePath();
+      ctx.fillStyle=col;ctx.fill();ctx.lineWidth=3;ctx.strokeStyle='#14213D';ctx.stroke();
+      ctx.save();ctx.translate(cx,cy);ctx.rotate(a0+st/2);ctx.textAlign='right';ctx.textBaseline='middle';
+      ctx.fillStyle=darkText(col)?'#14213D':'#FFFFFF';
+      ctx.font='800 '+(n>12?15:n>8?19:23)+'px Manrope, system-ui, sans-serif';
+      let t=items[i].label;if(t.length>14)t=t.slice(0,13)+'…';
+      ctx.fillText(t,R-16,0);ctx.restore();
+    }
+    ctx.beginPath();ctx.arc(cx,cy,26,0,Math.PI*2);ctx.fillStyle='#FFFFFF';ctx.fill();ctx.lineWidth=4;ctx.strokeStyle='#14213D';ctx.stroke();
+  }
+  function land(){
+    const n=items.length,st=Math.PI*2/n;
+    const ang=(((-Math.PI/2-rot)%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
+    const idx=Math.min(n-1,Math.floor(ang/st));
+    const it=items[idx];
+    const scored=!!(it.q||it.a);
+    const ansBox=h('div');
+    const done=ok=>{
+      rounds+=scored?1:0;if(ok)right++;
+      if(d.remove)items.splice(idx,1);
+      result.replaceChildren();draw();spin.disabled=false;
+      if(!items.length)api.finish(right,rounds,'Ο τροχός άδειασε!');
+    };
+    result.replaceChildren(h('div',{class:'pick'},it.label),
+      it.q?h('p',{class:'qtext',style:'text-align:center'},it.q):null,
+      h('div',{class:'row',style:'justify-content:center'},it.q?listenBtn(it.q):null,
+        it.a?h('button',{class:'btn brandb',type:'button',onclick:e=>{e.target.hidden=true;ansBox.append(h('div',{class:'ans'},h('b',{},'Απάντηση: '),it.a));}},'Δες την απάντηση'):null),
+      ansBox,
+      h('div',{class:'row',style:'justify-content:center;margin-top:.8rem'},
+        scored?[h('button',{class:'btn primary',type:'button',onclick:()=>done(true)},'Σωστό'),h('button',{class:'btn',type:'button',onclick:()=>done(false)},'Θα το ξαναδούμε')]
+          :h('button',{class:'btn primary',type:'button',onclick:()=>done(false)},'Συνέχεια')));
+  }
+  const spin=h('button',{class:'btn primary',type:'button',onclick:()=>{
+    if(spinning||!items.length)return;
+    spinning=true;spin.disabled=true;result.replaceChildren();
+    const start=rot,extra=Math.PI*2*(5+Math.random()*3)+Math.random()*Math.PI*2,t0=performance.now();
+    const dur=matchMedia('(prefers-reduced-motion: reduce)').matches?600:4200;
+    (function step(now){
+      const p=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-p,3);
+      rot=start+extra*e;draw();
+      if(p<1)requestAnimationFrame(step);else{spinning=false;land();}
+    })(t0);
+  }},'Γύρνα τον τροχό');
+  root.append(h('div',{class:'stage'},h('div',{class:'wheel-wrap'},cv,h('div',{class:'pointer','aria-hidden':'true'})),
+    h('div',{class:'row',style:'justify-content:center'},spin,h('button',{class:'btn ghost',type:'button',onclick:()=>api.finish(right,rounds,rounds?'':'Καλή διασκέδαση!')},'Τέλος παιχνιδιού')),result));
+  draw();
+}
+registerType('wheel',{
+  label:'Τροχός',color:'#D1495B',
+  blurb:'Γυρίζει ο τροχός και βγάζει ερώτηση, πράξη, όνομα ή πρόκληση.',
+  format:'Ετικέτα | Ερώτηση | Απάντηση (τα δύο τελευταία προαιρετικά)',
+  unit:'τμήματα',count:d=>wheelItems(d.text).length,
+  blank:()=>({text:'',remove:true}),
+  sampleTitle:'Τροχός πράξεων',sampleTag:'Δημοτικό · Μαθηματικά',
+  sample:()=>({remove:true,text:'3 + 4 | Πόσο κάνει 3 + 4; | 7\n5 × 2 | Πόσο κάνει 5 × 2; | 10\n10 − 6 | Πόσο κάνει 10 − 6; | 4\n8 + 5 | Πόσο κάνει 8 + 5; | 13\n9 − 3 | Πόσο κάνει 9 − 3; | 6\n6 × 3 | Πόσο κάνει 6 × 3; | 18\n12 ÷ 4 | Πόσο κάνει 12 ÷ 4; | 3\n7 + 7 | Πόσο κάνει 7 + 7; | 14'}),
+  editor:textEditor({label:'Τα τμήματα του τροχού',rows:9,unit:'τμήματα',count:d=>wheelItems(d.text).length,
+    placeholder:'3 + 4 | Πόσο κάνει 3 + 4; | 7',
+    hint:'Μία γραμμή ανά τμήμα: <code>Ετικέτα | Ερώτηση | Απάντηση</code>. Η ετικέτα φαίνεται πάνω στον τροχό, γι\' αυτό να είναι σύντομη. Αν γράψεις μόνο ετικέτες (π.χ. ονόματα), ο τροχός λειτουργεί ως κλήρωση.',
+    fields:[{k:'remove',type:'check',label:'Κάθε τμήμα βγαίνει μία φορά (αφαιρείται μετά)'}]}),
+  validate:d=>wheelItems(d.text).length>=2?null:'Γράψε τουλάχιστον δύο τμήματα.',
+  play:wheelPlay
+});
+
+/* ---------- 6. Μνήμη ---------- */
+const memPairs=t=>pairs(t).filter(p=>p[0]&&p[1]).slice(0,12);
+function memPlay(root,d,api){
+  const ps=memPairs(d.text);
+  if(ps.length<2){root.append(h('p',{class:'warn'},'Χρειάζονται τουλάχιστον δύο ζευγάρια.'));return;}
+  const cards=shuffle(ps.flatMap((p,i)=>[{id:i,t:p[0]},{id:i,t:p[1]}]));
+  let open=[],moves=0,found=0,lock=false;
+  const cnt=h('span',{class:'count'},'Κινήσεις: 0');
+  const grid=h('div',{class:'mgrid'});
+  cards.forEach(c=>{
+    c.el=h('button',{class:'mcard',type:'button','aria-label':'Κλειστή κάρτα'},'?');
+    c.el.addEventListener('click',()=>{
+      if(lock||open.includes(c)||c.done)return;
+      c.el.classList.add('up');c.el.textContent=c.t;c.el.setAttribute('aria-label',c.t);open.push(c);
+      if(open.length===2){
+        moves++;cnt.textContent='Κινήσεις: '+moves;
+        const [a,b]=open;
+        if(a.id===b.id){a.done=b.done=true;[a,b].forEach(x=>{x.el.classList.remove('up');x.el.classList.add('done');});open=[];found++;
+          if(found===ps.length)setTimeout(()=>api.finish(0,0,'Βρήκες όλα τα ζευγάρια σε '+moves+' κινήσεις.'),700);}
+        else{lock=true;setTimeout(()=>{[a,b].forEach(x=>{x.el.classList.remove('up');x.el.textContent='?';x.el.setAttribute('aria-label','Κλειστή κάρτα');});open=[];lock=false;},1000);}
+      }
+    });
+    grid.append(c.el);
+  });
+  root.append(h('div',{class:'stage'},h('div',{class:'row between'},h('span',{class:'count'},'Βρες τα ζευγάρια'),cnt),h('div',{style:'height:.8rem'}),grid));
+}
+registerType('memory',{
+  label:'Παιχνίδι μνήμης',color:'#2A8A4A',
+  blurb:'Κάρτες που γυρίζουν. Ο μαθητής βρίσκει τα ζευγάρια (λέξη και εικόνα-ήχος, πράξη και αποτέλεσμα).',
+  format:'Κάρτα Α | Κάρτα Β, ένα ζευγάρι ανά γραμμή (έως 12)',
+  unit:'ζευγάρια',count:d=>memPairs(d.text).length,
+  blank:()=>({text:''}),
+  sampleTitle:'Ζώα και ήχοι',sampleTag:'Νηπιαγωγείο · Γλώσσα',
+  sample:()=>({text:'Σκύλος | Γαβγίζει\nΓάτα | Νιαουρίζει\nΑγελάδα | Μουγκρίζει\nΠρόβατο | Βελάζει\nΓάιδαρος | Γκαρίζει\nΚότα | Κακαρίζει'}),
+  editor:textEditor({label:'Τα ζευγάρια',rows:8,unit:'ζευγάρια',count:d=>memPairs(d.text).length,
+    placeholder:'Σκύλος | Γαβγίζει',
+    hint:'Ένα ζευγάρι ανά γραμμή: <code>Κάρτα Α | Κάρτα Β</code>. Μπορείς να βάλεις λέξη και ορισμό, πράξη και αποτέλεσμα, κεφαλαίο και πεζό γράμμα. Έως 12 ζευγάρια.'}),
+  validate:d=>memPairs(d.text).length>=2?null:'Γράψε τουλάχιστον δύο ζευγάρια, με την κάθετη γραμμή | ανάμεσα.',
+  play:memPlay
+});
+
+/* ---------- 7. Πράξεις (γεννήτρια) ---------- */
+function mathEditor(box,d){
+  const OPS=['+','−','×','÷'];
+  box.append(h('p',{class:'hint'},'Το Εργαστήρι φτιάχνει τις πράξεις μόνο του, κάθε φορά διαφορετικές. Διάλεξε τις πράξεις και το εύρος των αριθμών.'),
+    h('div',{class:'optsbox'},OPS.map(o=>h('label',{class:'chk'},h('input',{type:'checkbox',checked:d.ops.includes(o),onchange:e=>{d.ops=e.target.checked?[...new Set([...d.ops,o])]:d.ops.filter(x=>x!==o);}}),'Πράξη '+o)),),
+    optionFields([{k:'min',type:'number',label:'Από αριθμό',min:0,max:1000},{k:'max',type:'number',label:'Έως αριθμό',min:1,max:1000},{k:'count',type:'number',label:'Πόσες πράξεις',min:1,max:50},{k:'table',type:'number',label:'Πίνακας του (προαιρετικό)',min:1,max:20},{k:'gap',type:'check',label:'Κρυμμένος αριθμός (π.χ. 7 + ? = 12)'},{k:'test',type:'check',label:'Λειτουργία τεστ (μία προσπάθεια, φαίνεται η σωστή απάντηση)'}],d));
+}
+function mkMath(d){
+  const ops=d.ops&&d.ops.length?d.ops:['+'];
+  const op=ops[Math.floor(Math.random()*ops.length)];
+  const lo=Math.max(0,+d.min||0),hi=Math.max(lo+1,+d.max||10);
+  const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+  const tb=+d.table||0;
+  let a,b,res;
+  if(op==='+'){a=rnd(lo,hi);b=rnd(lo,hi);res=a+b;}
+  else if(op==='−'){a=rnd(lo,hi);b=rnd(lo,a);res=a-b;}
+  else if(op==='×'){if(tb){a=tb;b=rnd(1,10);}else{a=rnd(lo,hi);b=rnd(lo,hi);}res=a*b;}
+  else{b=tb||rnd(Math.max(1,lo),Math.max(1,hi));const q=rnd(lo,hi);a=b*q;res=q;}
+  return d.gap?{text:a+' '+op+' ? = '+res,ans:b}:{text:a+' '+op+' '+b+' = ?',ans:res};
+}
+function mathPlay(root,d,api){
+  const n=Math.max(1,Math.min(50,+d.count||10));
+  seqPlay(root,Array.from({length:n},()=>mkMath(d)),(st,it,next)=>{
+    let tried=false,first=null;
+    const inp=h('input',{type:'text',inputmode:'numeric',autocomplete:'off','aria-label':'Η απάντησή σου'});
+    const fb=h('div',{class:'fb',role:'status','aria-live':'polite'});
+    const parts=it.text.split('?');
+    const nxt=h('button',{class:'btn primary',type:'button',hidden:true,onclick:()=>next(!tried,{q:it.text,yours:first||String(it.ans),correct:String(it.ans)})},'Επόμενη');
+    const go=()=>{
+      if(inp.value.trim()===''){fb.textContent='Γράψε έναν αριθμό.';fb.className='fb soft';return;}
+      if(first===null)first=inp.value.trim();
+      if(+inp.value.replace(',','.')===it.ans){fb.textContent=tried?'Σωστά, τώρα το βρήκες!':'Μπράβο!';fb.className='fb good';inp.readOnly=true;chk.hidden=true;nxt.hidden=false;nxt.focus();}
+      else if(d.test){tried=true;inp.readOnly=true;chk.hidden=true;fb.textContent='Λάθος. Η σωστή απάντηση είναι '+it.ans;fb.className='fb soft';nxt.hidden=false;nxt.focus();}
+      else{tried=true;fb.textContent='Δεν πειράζει, δοκίμασε ξανά.';fb.className='fb soft';inp.select();}
+    };
+    const chk=h('button',{class:'btn brandb',type:'button',onclick:go},'Έλεγχος');
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(!nxt.hidden)nxt.click();else go();}});
+    st.append(h('p',{class:'math'},parts[0],inp,parts[1]||''),fb,h('div',{class:'row',style:'justify-content:center'},chk,nxt));
+    setTimeout(()=>inp.focus(),30);
+  },api);
+}
+registerType('math',{
+  label:'Πράξεις',color:'#3D5A80',
+  blurb:'Αυτόματες ασκήσεις πρόσθεσης, αφαίρεσης, προπαίδειας και διαίρεσης.',
+  format:'Επιλογές: πράξεις, εύρος αριθμών, πλήθος. Δεν γράφεις κείμενο.',
+  unit:'πράξεις',count:d=>d.count||10,
+  blank:()=>({ops:['+','−'],min:0,max:20,count:10,table:'',gap:false,test:false}),
+  sampleTitle:'Προπαίδεια του 3',sampleTag:'Δημοτικό · Μαθηματικά',
+  sample:()=>({ops:['×'],min:1,max:10,count:8,table:3,gap:false}),
+  editor:mathEditor,
+  validate:d=>d.ops&&d.ops.length?null:'Διάλεξε τουλάχιστον μία πράξη.',
+  play:mathPlay
+});
+
+/* ---------- κατάσταση, βιβλιοθήκη ---------- */
+let lib=store.get('ergastiri.lib');
+if(EMB){lib=[];}
+else if(!Array.isArray(lib)){
+  lib=Object.keys(TYPES).map(k=>({id:uid(),type:k,title:TYPES[k].sampleTitle,tag:TYPES[k].sampleTag,data:TYPES[k].sample()}));
+  store.set('ergastiri.lib',lib);
+}
+const saveLib=()=>store.set('ergastiri.lib',lib);
+let V={name:'library'};
+const ROUTES={library:'Βιβλιοθήκη',create:'Νέα δραστηριότητα',guide:'Οδηγός'};
+
+function go(name,extra){
+  V=Object.assign({name},extra||{});
+  if(ROUTES[name]){try{history.replaceState(null,'','#'+name);}catch(e){}}
+  render();
+}
+function render(){
+  $('#nav').replaceChildren(...Object.entries(ROUTES).map(([k,l])=>h('a',{href:'#'+k,class:(V.name===k||(V.name==='play'&&k==='library'))?'on':'','aria-current':V.name===k?'page':null,onclick:e=>{e.preventDefault();go(k,k==='create'?{step:1}:{});}},l)));
+  const app=$('#app');app.replaceChildren();
+  try{speechSynthesis.cancel();}catch(e){}
+  window.scrollTo(0,0);
+  ({library:libraryView,create:wizardView,play:playView,guide:guideView}[V.name]||libraryView)(app);
+}
+window.addEventListener('hashchange',()=>{const n=location.hash.slice(1);if(ROUTES[n]&&n!==V.name)go(n,n==='create'?{step:1}:{});});
+
+/* αναπαραγωγή */
+function endScreen(score,total,note,again,extra,review){
+  const pct=total?Math.round(score/total*100):100;
+  const head=!total?'Μπράβο!':pct>=90?'Εξαιρετικά!':pct>=70?'Μπράβο!':pct>=50?'Καλή προσπάθεια!':'Δοκίμασε ξανά, θα τα καταφέρεις!';
+  return h('section',{class:'stage end'},
+    h('h2',{},head),
+    total?h('p',{class:'pct'},pct+'%'):null,
+    total?h('p',{class:'big'},'Σωστά με την πρώτη: '+score+' από '+total):null,
+    note?h('p',{},note):null,
+    review&&review.length?h('div',{},h('h3',{style:'margin-top:1.4rem'},'Ανασκόπηση απαντήσεων'),
+      h('ol',{class:'review'},review.map(r=>h('li',{class:r.ok?'ok':'no'},
+        h('div',{class:'rv-h'},h('span',{class:'rv-i','aria-label':r.ok?'Σωστό':'Λάθος'},r.ok?'✓':'✗'),h('span',{},r.q)),
+        h('p',{class:'rv-w'},'Η απάντησή σου: '+r.yours),
+        (!r.ok&&r.correct)?h('p',{class:'rv-w'},'Σωστή απάντηση: '+r.correct):null,
+        r.why?h('p',{class:'rv-w'},'Εξήγηση: '+r.why):null)))):null,
+    h('div',{class:'row'},h('button',{class:'btn primary',type:'button',onclick:again},'Παίξε ξανά'),extra?extra():null));
+}
+function mountPlay(box,act,extra){
+  const T=TYPES[act.type];
+  box.replaceChildren();
+  const api={finish(s,t,n,rv){
+    box.replaceChildren(endScreen(s,t,n,()=>mountPlay(box,act,extra),extra,rv));
+    if(EMB==='play')post({type:'finish',score:s,total:t,note:n||'',review:rv||[]});
+    window.scrollTo(0,0);
+  }};
+  try{T.play(box,clone(act.data),api);}catch(e){box.append(h('p',{class:'warn'},'Κάτι πήγε στραβά στη δραστηριότητα: '+e.message));}
+}
+function playView(app){
+  const act=V.act;
+  const box=h('div',{class:'stagewrap'});
+  if(EMB==='play'){app.append(box);mountPlay(box,act,()=>h('button',{class:'btn',type:'button',onclick:()=>post({type:'exit'})},'Τέλος'));return;}
+  app.append(h('div',{class:'head'},h('div',{},h('h1',{},act.title||'Χωρίς τίτλο'),h('p',{class:'hint'},TYPES[act.type].label)),
+    h('button',{class:'btn',type:'button',onclick:()=>go('library')},'← Βιβλιοθήκη')),box);
+  mountPlay(box,act,()=>h('button',{class:'btn',type:'button',onclick:()=>go('library')},'Βιβλιοθήκη'));
+}
+
+function libraryView(app){
+  let filter='all',term='';
+  const list=h('div',{class:'grid'}),chips=h('div',{class:'chips',role:'group','aria-label':'Φίλτρο τύπου'});
+  function draw(){
+    chips.replaceChildren(...[['all','Όλα'],...Object.entries(TYPES).map(([k,t])=>[k,t.label])].map(([k,l])=>
+      h('button',{class:'chip'+(filter===k?' on':''),type:'button','aria-pressed':filter===k,onclick:()=>{filter=k;draw();}},l)));
+    const items=lib.filter(x=>(filter==='all'||x.type===filter)&&norm(x.title+' '+(x.tag||'')).includes(norm(term)));
+    list.replaceChildren(...(items.length?items.map(card):[h('p',{class:'empty'},'Δεν βρέθηκε δραστηριότητα. Φτιάξε μια νέα με το κουμπί «Νέα δραστηριότητα».')]));
+  }
+  function card(x){
+    const T=TYPES[x.type];
+    let armed=false;
+    const del=h('button',{class:'btn small ghost',type:'button',onclick:()=>{
+      if(!armed){armed=true;del.textContent='Σίγουρα;';setTimeout(()=>{armed=false;del.textContent='Διαγραφή';},3000);return;}
+      lib=lib.filter(y=>y.id!==x.id);saveLib();draw();toast('Η δραστηριότητα διαγράφηκε.');
+    }},'Διαγραφή');
+    return h('article',{class:'card',style:'--tc:'+T.color},
+      h('span',{class:'tag'},T.label),h('h3',{},x.title||'Χωρίς τίτλο'),
+      h('p',{class:'meta'},[x.tag,T.count(x.data)+' '+T.unit].filter(Boolean).join(' · ')),
+      h('div',{class:'acts'},
+        h('button',{class:'btn small primary',type:'button',onclick:()=>go('play',{act:x})},'Παίξε'),
+        h('button',{class:'btn small',type:'button',onclick:()=>go('create',{step:2,act:clone(x),editing:true})},'Επεξεργασία'),
+        h('button',{class:'btn small',type:'button',onclick:()=>{const c=clone(x);c.id=uid();c.title=(c.title||'')+' (αντίγραφο)';lib.unshift(c);saveLib();draw();toast('Δημιουργήθηκε αντίγραφο.');}},'Αντίγραφο'),
+        h('button',{class:'btn small',type:'button',onclick:()=>openShare([x])},'Κοινοποίηση'),del));
+  }
+  app.append(
+    h('div',{class:'head'},h('div',{},h('h1',{},'Οι δραστηριότητές μου'),h('p',{class:'hint'},'Διάλεξε μία για να παίξεις με την τάξη ή φτιάξε δική σου.')),
+      h('div',{class:'row'},h('button',{class:'btn primary',type:'button',onclick:()=>go('create',{step:1})},'+ Νέα δραστηριότητα'),h('button',{class:'btn',type:'button',onclick:()=>openShare(lib)},'Αντίγραφο ασφαλείας'))),
+    h('label',{class:'lbl',for:'search'},'Αναζήτηση'),
+    h('input',{id:'search',type:'search',placeholder:'Τίτλος ή μάθημα...',oninput:e=>{term=e.target.value;draw();}}),
+    chips,list);
+  draw();
+}
+
+/* οδηγός δημιουργίας (wizard) */
+function wizardView(app){
+  const step=V.step||1;
+  const names=['Τύπος','Περιεχόμενο','Δοκιμή και αποθήκευση'];
+  app.append(h('div',{class:'head'},h('h1',{},V.editing?'Επεξεργασία δραστηριότητας':'Νέα δραστηριότητα')),
+    h('ol',{class:'steps'},names.map((n,i)=>h('li',{class:i+1===step?'cur':'','aria-current':i+1===step?'step':null},n))));
+  if(step===1){
+    app.append(h('p',{class:'hint'},'Τι είδους δραστηριότητα θέλεις να φτιάξεις;'),
+      h('div',{class:'types'},Object.entries(TYPES).map(([k,T])=>h('button',{class:'tcard',type:'button',style:'--tc:'+T.color,onclick:()=>{
+        V.act={id:uid(),type:k,title:'',tag:'',data:T.blank()};V.step=2;render();}},
+        h('h3',{},T.label),h('span',{},T.blurb),h('small',{},'Μορφή: '+T.format)))));
+    return;
+  }
+  const act=V.act,T=TYPES[act.type];
+  if(step===2){
+    const body=h('div');
+    T.editor(body,act.data);
+    const err=h('p',{class:'warn',role:'alert'});
+    app.append(h('div',{class:'panel'},
+      h('div',{class:'row between'},h('h2',{},T.label),
+        h('button',{class:'btn small',type:'button',onclick:()=>{act.data=T.sample();if(!act.title)act.title=T.sampleTitle;render();}},'Φόρτωσε παράδειγμα')),
+      h('label',{class:'lbl',for:'f-title'},'Τίτλος'),
+      h('input',{id:'f-title',type:'text',value:act.title,placeholder:'π.χ. Σταυρόλεξο με φρούτα',oninput:e=>{act.title=e.target.value;}}),
+      h('label',{class:'lbl',for:'f-tag'},'Τάξη ή μάθημα (προαιρετικό)'),
+      h('input',{id:'f-tag',type:'text',value:act.tag||'',placeholder:'π.χ. Γ΄ Δημοτικού · Γλώσσα',oninput:e=>{act.tag=e.target.value;}}),
+      h('hr',{style:'border:0;border-top:2px dashed var(--line);margin:1.2rem 0'}),
+      body,err,
+      h('div',{class:'row',style:'margin-top:1.2rem'},
+        h('button',{class:'btn',type:'button',onclick:()=>{if(EMB&&V.editing){post({type:'cancel'});return;}go(V.editing&&!EMB?'library':'create',{step:1});}},'← '+(V.editing?'Άκυρο':'Άλλος τύπος')),
+        h('button',{class:'btn primary',type:'button',onclick:()=>{
+          const m=T.validate(act.data);
+          if(m){err.textContent=m;err.scrollIntoView({block:'center'});return;}
+          if(!act.title.trim())act.title=T.sampleTitle+' (νέο)';
+          V.step=3;render();}},'Δοκιμή →'))));
+    return;
+  }
+  const box=h('div',{class:'stagewrap'});
+  const saveBtn=()=>h('button',{class:'btn primary',type:'button',onclick:()=>{
+    if(EMB){post({type:'save',activity:clone(act)});toast('Αποθηκεύεται...');return;}
+    const i=lib.findIndex(y=>y.id===act.id);
+    if(i>=0)lib[i]=clone(act);else lib.unshift(clone(act));
+    saveLib();toast('Αποθηκεύτηκε στη βιβλιοθήκη.');go('library');
+  }},EMB?'Αποθήκευση':'Αποθήκευση στη βιβλιοθήκη');
+  app.append(h('div',{class:'row',style:'margin-bottom:1rem'},
+    h('button',{class:'btn',type:'button',onclick:()=>{V.step=2;render();}},'← Αλλαγές'),saveBtn()),
+    h('p',{class:'hint'},'Παίξε τη δραστηριότητα όπως θα τη δει ο μαθητής. Αν χρειάζεται κάτι, γύρνα πίσω στις αλλαγές.'),box);
+  mountPlay(box,act,()=>h('button',{class:'btn',type:'button',onclick:()=>{V.step=2;render();}},'Αλλαγές'));
+}
+
+/* κοινοποίηση / αντίγραφο ασφαλείας */
+let dl=null;
+try{if(window.claude&&window.claude.use)window.claude.use('downloads').then(x=>{dl=x;}).catch(()=>{});}catch(e){}
+function openShare(list){
+  const dlg=$('#dlg');
+  const json=JSON.stringify({app:'ergastiri',v:1,activities:list},null,1);
+  const out=h('textarea',{readonly:true,rows:6,'aria-label':'Κώδικας δραστηριοτήτων',onfocus:e=>e.target.select()});out.value=json;
+  const inp=h('textarea',{rows:5,placeholder:'Επικόλλησε εδώ τον κώδικα που σου έστειλαν...','aria-label':'Κώδικας για εισαγωγή'});
+  const file=h('input',{type:'file',accept:'.json,application/json','aria-label':'Αρχείο για εισαγωγή',onchange:async e=>{const f=e.target.files[0];if(f)inp.value=await f.text();}});
+  const copy=h('button',{class:'btn primary',type:'button',onclick:()=>{
+    try{navigator.clipboard.writeText(json).then(()=>toast('Αντιγράφηκε.')).catch(()=>{out.select();toast('Πάτα Ctrl+C για αντιγραφή.');});}
+    catch(e){out.select();toast('Πάτα Ctrl+C για αντιγραφή.');}
+  }},'Αντιγραφή');
+  const save=dl?h('button',{class:'btn',type:'button',onclick:async()=>{
+    try{await dl.save({filename:'ergastiri-drastiriotites.json',data:json});toast('Το αρχείο αποθηκεύτηκε.');}
+    catch(e){toast('Δεν αποθηκεύτηκε. Χρησιμοποίησε την αντιγραφή.');}
+  }},'Λήψη αρχείου'):null;
+  const err=h('p',{class:'warn',role:'alert'});
+  const imp=h('button',{class:'btn brandb',type:'button',onclick:()=>{
+    try{
+      const o=JSON.parse(inp.value);
+      const arr=(Array.isArray(o)?o:o.activities)||[];
+      let n=0;
+      arr.forEach(a=>{if(a&&TYPES[a.type]&&a.data&&typeof a.data==='object'){lib.unshift({id:uid(),type:a.type,title:String(a.title||'Χωρίς τίτλο'),tag:String(a.tag||''),data:a.data});n++;}});
+      if(!n){err.textContent='Δεν βρέθηκαν δραστηριότητες στον κώδικα.';return;}
+      saveLib();dlg.close();toast('Προστέθηκαν '+n+' δραστηριότητες.');render();
+    }catch(e){err.textContent='Ο κώδικας δεν διαβάστηκε. Βεβαιώσου ότι τον αντέγραψες ολόκληρο.';}
+  }},'Εισαγωγή');
+  dlg.replaceChildren(h('h2',{},list.length===1?'Κοινοποίηση δραστηριότητας':'Αντίγραφο ασφαλείας'),
+    h('p',{class:'hint'},'Αντίγραψε τον κώδικα και στείλ\' τον σε συνάδελφο ή κράτα τον σε ένα αρχείο. Ο άλλος τον επικολλά στην Εισαγωγή.'),
+    out,h('div',{class:'row',style:'margin:.6rem 0 1.2rem'},copy,save),
+    h('h3',{},'Εισαγωγή'),inp,h('div',{class:'row',style:'margin-top:.5rem'},file),err,
+    h('div',{class:'row',style:'margin-top:.8rem'},imp,h('button',{class:'btn',type:'button',onclick:()=>dlg.close()},'Κλείσιμο')));
+  if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','');
+}
+
+/* δυναμικός οδηγός χρήσης */
+function guideView(app){
+  const code=[
+    "registerType('truefalse', {",
+    "  label: 'Σωστό ή Λάθος',",
+    "  color: '#7B4FB3',",
+    "  blurb: 'Ο μαθητής κρίνει αν μια πρόταση είναι σωστή.',",
+    "  format: 'Πρόταση | ναι ή όχι',",
+    "  unit: 'προτάσεις',",
+    "  count: d => pairs(d.text).length,",
+    "  blank: () => ({ text: '' }),",
+    "  sample: () => ({ text: 'Ο ήλιος είναι αστέρι | ναι' }),",
+    "  sampleTitle: 'Σωστό ή Λάθος', sampleTag: '',",
+    "  editor: textEditor({ label: 'Προτάσεις', unit: 'προτάσεις', hint: '...',",
+    "    count: d => pairs(d.text).length }),",
+    "  validate: d => pairs(d.text).length ? null : 'Γράψε μία πρόταση.',",
+    "  play(root, d, api) {",
+    "    // φτιάξε τα κουμπιά μέσα στο root και, όταν τελειώσει, κάλεσε",
+    "    api.finish(σκορ, σύνολο, 'προαιρετικό μήνυμα');",
+    "  }",
+    "});"
+  ].join('\n');
+  app.append(h('div',{class:'guide stagewrap'},
+    h('h1',{style:'margin-bottom:1rem'},'Οδηγός'),
+    h('section',{class:'panel'},h('h2',{style:'margin-bottom:.6rem'},'Πώς φτιάχνω μια δραστηριότητα'),
+      h('ol',{},h('li',{},'Πάτα «Νέα δραστηριότητα» και διάλεξε τύπο.'),
+        h('li',{},'Γράψε το περιεχόμενο. Το κουμπί «Φόρτωσε παράδειγμα» δείχνει πώς γράφεται.'),
+        h('li',{},'Πάτα «Δοκιμή», παίξε την όπως ο μαθητής και αποθήκευσέ την.')),
+      h('p',{},'Μετά την αποθήκευση τη βρίσκεις στη Βιβλιοθήκη. Εκεί μπορείς να την παίξεις, να την αλλάξεις, να τη διπλασιάσεις για άλλη τάξη ή να τη στείλεις με «Κοινοποίηση».')),
+    h('section',{class:'panel'},h('h2',{style:'margin-bottom:.6rem'},'Οι τύποι δραστηριοτήτων'),
+      h('div',{class:'scroll'},h('table',{},h('thead',{},h('tr',{},h('th',{},'Τύπος'),h('th',{},'Τι κάνει'),h('th',{},'Πώς γράφεται'))),
+        h('tbody',{},Object.values(TYPES).map(T=>h('tr',{style:'--tc:'+T.color},h('td',{},h('span',{class:'swatch'}),T.label),h('td',{},T.blurb),h('td',{},T.format))))))),
+    h('section',{class:'panel'},h('h2',{style:'margin-bottom:.6rem'},'Συμβουλές για την τάξη'),
+      h('ul',{},h('li',{},'Κράτα κάθε δραστηριότητα μικρή: 5 έως 8 ερωτήσεις. Φτιάξε περισσότερες αντί για μία μεγάλη.'),
+        h('li',{},'Τα παιδιά δεν χάνουν πόντους όταν κάνουν λάθος. Δοκιμάζουν ξανά, και μετράει μόνο η σωστή απάντηση με την πρώτη.'),
+        h('li',{},'Τα κουμπιά Α+ και Αντίθεση πάνω δεξιά μεγαλώνουν τα γράμματα και δυναμώνουν τα χρώματα. Το Διάστιχο βοηθά παιδιά με δυσλεξία.'),
+        h('li',{},'Το κουμπί «Ακούστε» διαβάζει την ερώτηση φωναχτά, όταν η συσκευή έχει ελληνική φωνή.'),
+        h('li',{},'Κάνε τακτικά «Αντίγραφο ασφαλείας» από τη Βιβλιοθήκη. Οι δραστηριότητες αποθηκεύονται στον περιηγητή αυτής της συσκευής.'))),
+    h('section',{class:'panel'},h('h2',{style:'margin-bottom:.6rem'},'Πώς προστίθεται νέος τύπος παιχνιδιού'),
+      h('p',{},'Κάθε παιχνίδι είναι ένα μικρό «πακέτο» που δηλώνεται με μία εντολή. Ό,τι δηλωθεί εμφανίζεται μόνο του στη δημιουργία, στη βιβλιοθήκη και σε αυτόν τον οδηγό. Παράδειγμα:'),
+      h('pre',{},code),
+      h('p',{},'Ιδέες για επόμενους τύπους: σωστό ή λάθος, αντιστοίχιση με γραμμές, ταξινόμηση σε κουτιά, αναδιάταξη λέξεων σε πρόταση, ακουστικές ερωτήσεις, δραστηριότητες με εικόνες.'))));
+}
+
+/* εκκίνηση */
+applySet();
+if(EMB){
+  $('#app').replaceChildren(h('p',{class:'hint'},'Φόρτωση...'));
+  window.addEventListener('message',e=>{
+    if(e.origin!==location.origin||e.source!==parent)return;
+    const m=e.data;
+    if(!m||m.src!=='host'||m.type!=='load')return;
+    if(EMB==='builder'){V=m.activity?{name:'create',step:2,act:clone(m.activity),editing:true}:{name:'create',step:1};}
+    else{V={name:'play',act:m.activity};}
+    render();
+  });
+  post({type:'ready'});
+}else{
+  const first=location.hash.slice(1);
+  if(ROUTES[first]){V={name:first,step:1};}
+  render();
+}
+})();
+</script>
+</body>
+</html>
