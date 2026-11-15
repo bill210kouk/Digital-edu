@@ -5,10 +5,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   GRADE_LABELS,
+  GRADE_LEVEL,
   SUBJECT_EMOJI,
   SUBJECT_GAMES,
   SUBJECT_LABELS,
+  UNIT_GAME_TYPES,
 } from "@/lib/constants";
+import { vocabUnitsForGrade } from "@/lib/gameData";
 
 type Student = { id: string; name: string };
 type Note = { id: string; title: string; content: string; createdAt: string | Date };
@@ -215,6 +218,49 @@ export default function SubjectDetail({
               </div>
             ))}
           </div>
+
+          {subject.type === "GLOSSA" && (
+            <div className="mt-10">
+              <h3 className="font-heading text-xl font-bold text-slate-700 mb-1">
+                📚 Ενότητες Λεξιλογίου
+              </h3>
+              <p className="text-slate-500 text-sm mb-4">
+                Μικρές θεματικές ενότητες με 4 παιχνίδια η καθεμία — ιδανικό για εξάσκηση λίγων
+                λέξεων τη φορά.
+              </p>
+              <div className="grid sm:grid-cols-2 gap-5">
+                {vocabUnitsForGrade(GRADE_LEVEL[subject.grade]).map((unit) => (
+                  <div key={unit.id} className="bg-white rounded-2xl shadow p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-2xl">{unit.emoji}</span>
+                      <h4 className="font-heading font-bold text-slate-700">{unit.title}</h4>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {UNIT_GAME_TYPES.map((g) => {
+                        const key = `unit-${unit.id}-${g.type}`;
+                        return selectedStudent ? (
+                          <Link
+                            key={g.type}
+                            href={`/play/${subject.id}/${key}?studentId=${selectedStudent}`}
+                            className="text-center rounded-xl bg-sky-50 text-sky-700 px-3 py-2 text-sm font-semibold hover:bg-sky-100 transition"
+                          >
+                            {g.emoji} {g.label}
+                          </Link>
+                        ) : (
+                          <span
+                            key={g.type}
+                            className="text-center rounded-xl bg-slate-100 text-slate-400 px-3 py-2 text-sm font-semibold"
+                          >
+                            {g.emoji} {g.label}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

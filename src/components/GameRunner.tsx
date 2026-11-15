@@ -1,20 +1,27 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   additionRounds,
   englishMemoryPairs,
   fillLetterRounds,
+  getVocabUnit,
   numberMatchRounds,
   shapeCountRounds,
   syllableMemoryPairs,
   translateQuizRounds,
+  unitHighlightRounds,
+  unitListenRounds,
+  unitMissingLetterRounds,
+  unitPictureRounds,
   wordImageEnRounds,
   wordMatchRounds,
 } from "@/lib/gameData";
+import { parseUnitGameKey } from "@/lib/constants";
 import MultipleChoiceGame from "@/components/games/MultipleChoiceGame";
 import MemoryGame from "@/components/games/MemoryGame";
+import WordHighlightGame from "@/components/games/WordHighlightGame";
 
 type Props = {
   subjectId: string;
@@ -40,31 +47,13 @@ export default function GameRunner({
   const [attempt, setAttempt] = useState(0);
   const [result, setResult] = useState<{ score: number; maxScore: number } | null>(null);
   const [saving, setSaving] = useState(false);
+  const [content, setContent] = useState<GameContent | null>(null);
 
-  const content = useMemo(() => {
-    switch (gameKey) {
-      case "word-match":
-        return { kind: "choice" as const, rounds: wordMatchRounds(gradeLevel) };
-      case "fill-letter":
-        return { kind: "choice" as const, rounds: fillLetterRounds(gradeLevel) };
-      case "syllable-memory":
-        return { kind: "memory" as const, values: syllableMemoryPairs(gradeLevel) };
-      case "addition":
-        return { kind: "choice" as const, rounds: additionRounds(gradeLevel) };
-      case "number-match":
-        return { kind: "choice" as const, rounds: numberMatchRounds(gradeLevel) };
-      case "shape-count":
-        return { kind: "choice" as const, rounds: shapeCountRounds(gradeLevel) };
-      case "word-image-en":
-        return { kind: "choice" as const, rounds: wordImageEnRounds(gradeLevel) };
-      case "translate-quiz":
-        return { kind: "choice" as const, rounds: translateQuizRounds(gradeLevel) };
-      case "english-memory":
-        return { kind: "memory" as const, values: englishMemoryPairs(gradeLevel) };
-      default:
-        return { kind: "choice" as const, rounds: [] };
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    // Content uses Math.random, so it must only be generated client-side
+    // (after mount) to avoid a server/client hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setContent(generateContent(gameKey, gradeLevel));
   }, [gameKey, gradeLevel, attempt]);
 
   async function handleFinish(score: number, maxScore: number) {
@@ -127,12 +116,64 @@ export default function GameRunner({
               </Link>
             </div>
           </div>
+        ) : !content ? (
+          <div className="bg-white rounded-3xl shadow-lg p-10 text-center text-slate-400">
+            Φόρτωση παιχνιδιού...
+          </div>
         ) : content.kind === "choice" ? (
           <MultipleChoiceGame rounds={content.rounds} onFinish={handleFinish} />
+        ) : content.kind === "highlight" ? (
+          <WordHighlightGame rounds={content.rounds} onFinish={handleFinish} />
         ) : (
           <MemoryGame values={content.values} onFinish={handleFinish} />
         )}
       </div>
     </main>
   );
+}
+
+type GameContent =
+  | { kind: "choice"; rounds: ReturnType<typeof wordMatchRounds> }
+  | { kind: "highlight"; rounds: ReturnType<typeof unitHighlightRounds> }
+  | { kind: "memory"; values: string[] };
+
+function generateContent(gameKey: string, gradeLevel: number): GameContent {
+  const unitGame = parseUnitGameKey(gameKey);
+  if (unitGame) {
+    const unit = getVocabUnit(unitGame.unitId, gradeLevel);
+    if (!unit) return { kind: "choice", rounds: [] };
+    switch (unitGame.type) {
+      case "highlight":
+        return { kind: "highlight", rounds: unitHighlightRounds(unit) };
+      case "picture":
+        return { kind: "choice", rounds: unitPictureRounds(unit) };
+      case "missing":
+        return { kind: "choice", rounds: unitMissingLetterRounds(unit) };
+      case "listen":
+        return { kind: "choice", rounds: unitListenRounds(unit) };
+    }
+  }
+
+  switch (gameKey) {
+    case "word-match":
+      return { kind: "choice", rounds: wordMatchRounds(gradeLevel) };
+    case "fill-letter":
+      return { kind: "choice", rounds: fillLetterRounds(gradeLevel) };
+    case "syllable-memory":
+      return { kind: "memory", values: syllableMemoryPairs(gradeLevel) };
+    case "addition":
+      return { kind: "choice", rounds: additionRounds(gradeLevel) };
+    case "number-match":
+      return { kind: "choice", rounds: numberMatchRounds(gradeLevel) };
+    case "shape-count":
+      return { kind: "choice", rounds: shapeCountRounds(gradeLevel) };
+    case "word-image-en":
+      return { kind: "choice", rounds: wordImageEnRounds(gradeLevel) };
+    case "translate-quiz":
+      return { kind: "choice", rounds: translateQuizRounds(gradeLevel) };
+    case "english-memory":
+      return { kind: "memory", values: englishMemoryPairs(gradeLevel) };
+    default:
+      return { kind: "choice", rounds: [] };
+  }
 }

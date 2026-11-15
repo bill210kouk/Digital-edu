@@ -94,6 +94,26 @@ export const SUBJECT_GAMES: Record<string, GameDef[]> = {
   ],
 };
 
+export const UNIT_GAME_TYPES: { type: string; label: string; emoji: string }[] = [
+  { type: "highlight", label: "Βρες το Γράμμα", emoji: "🔎" },
+  { type: "picture", label: "Λέξη & Εικόνα", emoji: "🖼️" },
+  { type: "missing", label: "Λείπει ένα Γράμμα", emoji: "✏️" },
+  { type: "listen", label: "Άκου και Βρες", emoji: "🔊" },
+];
+
+export function parseUnitGameKey(gameKey: string) {
+  const match = gameKey.match(/^unit-(.+)-(highlight|picture|missing|listen)$/);
+  if (!match) return null;
+  return { unitId: match[1], type: match[2] };
+}
+
 export function gameTitle(subjectType: string, gameKey: string): GameDef | undefined {
+  const unitGame = parseUnitGameKey(gameKey);
+  if (unitGame) {
+    const gameType = UNIT_GAME_TYPES.find((g) => g.type === unitGame.type);
+    if (gameType) {
+      return { key: gameKey, title: gameType.label, description: "", emoji: gameType.emoji };
+    }
+  }
   return SUBJECT_GAMES[subjectType]?.find((g) => g.key === gameKey);
 }

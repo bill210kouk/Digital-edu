@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Round } from "@/lib/gameData";
 
 export default function MultipleChoiceGame({
@@ -17,6 +17,20 @@ export default function MultipleChoiceGame({
 
   const round = rounds[index];
   const maxScore = rounds.length * 10;
+
+  function speak(text: string) {
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "el-GR";
+    utterance.rate = 0.9;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  }
+
+  useEffect(() => {
+    if (round?.speak) speak(round.speak);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index]);
 
   function handleChoice(choiceIndex: number) {
     if (selected !== null) return;
@@ -53,6 +67,15 @@ export default function MultipleChoiceGame({
         <p className="font-heading text-xl sm:text-2xl font-bold text-slate-700">
           {round.prompt}
         </p>
+        {round.speak && (
+          <button
+            type="button"
+            onClick={() => speak(round.speak!)}
+            className="mt-4 rounded-full bg-sky-100 text-sky-700 px-5 py-2 font-semibold hover:bg-sky-200 transition"
+          >
+            🔊 Παίξε τον ήχο
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-4 w-full">

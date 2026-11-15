@@ -2,8 +2,15 @@ export type Choice = { label: string; emoji?: string };
 export type Round = {
   prompt: string;
   promptEmoji?: string;
+  speak?: string;
   choices: Choice[];
   correctIndex: number;
+};
+
+export type WordItem = { word: string; emoji: string };
+export type HighlightRound = {
+  letter: string;
+  items: { word: string; emoji: string; isMatch: boolean }[];
 };
 
 function shuffle<T>(arr: T[]): T[] {
@@ -249,4 +256,168 @@ export function englishMemoryPairs(level: number): string[] {
   const words = englishForGrade(level).map((w) => w.label);
   const n = level === 1 ? 4 : level === 2 ? 5 : level === 3 ? 6 : 8;
   return pickN(words, n);
+}
+
+// ---------- Ενότητες Λεξιλογίου (Γλώσσα) ----------
+
+export type VocabUnit = { id: string; title: string; emoji: string; words: WordItem[] };
+
+const VOCAB_UNITS: VocabUnit[] = [
+  {
+    id: "animals",
+    title: "Ζώα",
+    emoji: "🐾",
+    words: [
+      { word: "ΓΑΤΑ", emoji: "🐱" },
+      { word: "ΣΚΥΛΟΣ", emoji: "🐶" },
+      { word: "ΨΑΡΙ", emoji: "🐟" },
+      { word: "ΠΟΥΛΙ", emoji: "🐦" },
+      { word: "ΑΛΟΓΟ", emoji: "🐴" },
+      { word: "ΑΓΕΛΑΔΑ", emoji: "🐄" },
+      { word: "ΠΡΟΒΑΤΟ", emoji: "🐑" },
+      { word: "ΖΕΒΡΑ", emoji: "🦓" },
+    ],
+  },
+  {
+    id: "home",
+    title: "Σπίτι & Οικογένεια",
+    emoji: "🏠",
+    words: [
+      { word: "ΣΠΙΤΙ", emoji: "🏠" },
+      { word: "ΜΑΜΑ", emoji: "👩" },
+      { word: "ΜΠΑΜΠΑΣ", emoji: "👨" },
+      { word: "ΓΙΑΓΙΑ", emoji: "👵" },
+      { word: "ΠΑΠΠΟΥΣ", emoji: "👴" },
+      { word: "ΚΟΥΖΙΝΑ", emoji: "🍽️" },
+      { word: "ΚΡΕΒΑΤΙ", emoji: "🛏️" },
+      { word: "ΠΟΡΤΑ", emoji: "🚪" },
+    ],
+  },
+  {
+    id: "nature",
+    title: "Φύση",
+    emoji: "🌳",
+    words: [
+      { word: "ΗΛΙΟΣ", emoji: "☀️" },
+      { word: "ΦΕΓΓΑΡΙ", emoji: "🌙" },
+      { word: "ΔΕΝΤΡΟ", emoji: "🌳" },
+      { word: "ΛΟΥΛΟΥΔΙ", emoji: "🌸" },
+      { word: "ΒΟΥΝΟ", emoji: "⛰️" },
+      { word: "ΘΑΛΑΣΣΑ", emoji: "🌊" },
+      { word: "ΒΡΟΧΗ", emoji: "🌧️" },
+      { word: "ΑΣΤΕΡΙ", emoji: "⭐" },
+    ],
+  },
+  {
+    id: "food",
+    title: "Φαγητό",
+    emoji: "🍎",
+    words: [
+      { word: "ΜΗΛΟ", emoji: "🍎" },
+      { word: "ΨΩΜΙ", emoji: "🍞" },
+      { word: "ΓΑΛΑ", emoji: "🥛" },
+      { word: "ΤΥΡΙ", emoji: "🧀" },
+      { word: "ΣΟΚΟΛΑΤΑ", emoji: "🍫" },
+      { word: "ΜΠΑΝΑΝΑ", emoji: "🍌" },
+      { word: "ΖΥΜΑΡΙΚΑ", emoji: "🍝" },
+      { word: "ΠΟΡΤΟΚΑΛΙ", emoji: "🍊" },
+    ],
+  },
+  {
+    id: "school",
+    title: "Σχολείο",
+    emoji: "🏫",
+    words: [
+      { word: "ΒΙΒΛΙΟ", emoji: "📖" },
+      { word: "ΜΟΛΥΒΙ", emoji: "✏️" },
+      { word: "ΤΕΤΡΑΔΙΟ", emoji: "📓" },
+      { word: "ΣΧΟΛΕΙΟ", emoji: "🏫" },
+      { word: "ΘΡΑΝΙΟ", emoji: "🪑" },
+      { word: "ΚΑΝΟΝΑΣ", emoji: "📏" },
+      { word: "ΣΑΚΙΔΙΟ", emoji: "🎒" },
+      { word: "ΜΠΑΛΑ", emoji: "⚽" },
+    ],
+  },
+];
+
+export function vocabUnitsForGrade(level: number): VocabUnit[] {
+  const maxLen = level === 1 ? 6 : level === 2 ? 7 : level === 3 ? 9 : 20;
+  return VOCAB_UNITS.map((u) => {
+    const filtered = u.words.filter((w) => w.word.length <= maxLen);
+    return { ...u, words: filtered.length >= 4 ? filtered : u.words };
+  });
+}
+
+export function getVocabUnit(unitId: string, level: number): VocabUnit | undefined {
+  return vocabUnitsForGrade(level).find((u) => u.id === unitId);
+}
+
+const GREEK_LETTERS = "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ".split("");
+
+export function unitPictureRounds(unit: VocabUnit): Round[] {
+  const pool = unit.words.map((w) => ({ key: w.word, label: w.word, emoji: w.emoji }));
+  return makeChoiceRounds(pool, Math.min(8, pool.length), "emoji");
+}
+
+export function unitMissingLetterRounds(unit: VocabUnit): Round[] {
+  const items = pickN(unit.words, Math.min(8, unit.words.length));
+  const unitLetters = Array.from(new Set(unit.words.map((w) => w.word).join("").split(""))).filter(
+    (l) => GREEK_LETTERS.includes(l)
+  );
+  return items.map((item) => {
+    const idx = randInt(1, item.word.length - 2 < 1 ? item.word.length - 1 : item.word.length - 2);
+    const correctLetter = item.word[idx];
+    const masked = item.word.slice(0, idx) + "_" + item.word.slice(idx + 1);
+    const distractorPool = (unitLetters.length >= 4 ? unitLetters : GREEK_LETTERS).filter(
+      (l) => l !== correctLetter
+    );
+    const distractors = pickN(distractorPool, 3);
+    const choices = shuffle([correctLetter, ...distractors]).map((l) => ({ label: l }));
+    const correctIndex = choices.findIndex((c) => c.label === correctLetter);
+    return {
+      prompt: `Ποιο γράμμα λείπει; ${masked}`,
+      promptEmoji: item.emoji,
+      choices,
+      correctIndex,
+    };
+  });
+}
+
+export function unitListenRounds(unit: VocabUnit): Round[] {
+  const items = pickN(unit.words, Math.min(6, unit.words.length));
+  return items.map((item) => {
+    const distractors = pickN(
+      unit.words.filter((w) => w.word !== item.word),
+      3
+    );
+    const choices = shuffle([item, ...distractors]).map((c) => ({ label: c.word }));
+    const correctIndex = choices.findIndex((c) => c.label === item.word);
+    return {
+      prompt: "🔊 Άκου και βρες τη σωστή λέξη",
+      speak: item.word,
+      choices,
+      correctIndex,
+    };
+  });
+}
+
+export function unitHighlightRounds(unit: VocabUnit): HighlightRound[] {
+  const rounds: HighlightRound[] = [];
+  const allLetters = unit.words.map((w) => w.word).join("").split("");
+  const candidateLetters = Array.from(new Set(allLetters)).filter((l) => GREEK_LETTERS.includes(l));
+
+  for (let i = 0; i < 5; i++) {
+    const letter = candidateLetters[randInt(0, candidateLetters.length - 1)];
+    const matching = unit.words.filter((w) => w.word.includes(letter));
+    const nonMatching = unit.words.filter((w) => !w.word.includes(letter));
+    if (matching.length < 2 || nonMatching.length < 1) continue;
+    const chosenMatch = pickN(matching, Math.min(matching.length, 4));
+    const chosenOther = pickN(nonMatching, Math.min(nonMatching.length, 3));
+    const items = shuffle([
+      ...chosenMatch.map((w) => ({ ...w, isMatch: true })),
+      ...chosenOther.map((w) => ({ ...w, isMatch: false })),
+    ]);
+    rounds.push({ letter, items });
+  }
+  return rounds.length > 0 ? rounds : [];
 }
