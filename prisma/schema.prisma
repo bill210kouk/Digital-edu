@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Teacher {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  subjects     Subject[]
+}
+
+enum Grade {
+  A
+  B
+  C
+  D
+}
+
+enum SubjectType {
+  GLOSSA
+  MATH
+  ENGLISH
+}
+
+model Subject {
+  id        String      @id @default(cuid())
+  name      String
+  type      SubjectType
+  grade     Grade
+  teacherId String
+  teacher   Teacher     @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+  students  Student[]
+  notes     Note[]
+  results   GameResult[]
+}
+
+model Student {
+  id        String       @id @default(cuid())
+  name      String
+  subjectId String
+  subject   Subject      @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  createdAt DateTime     @default(now())
+  results   GameResult[]
+}
+
+model GameResult {
+  id        String   @id @default(cuid())
+  gameKey   String
+  score     Int
+  maxScore  Int
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  subjectId String
+  subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  subjectId String
+  subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
