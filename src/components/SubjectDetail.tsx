@@ -11,7 +11,7 @@ import {
   SUBJECT_LABELS,
   UNIT_GAME_TYPES,
 } from "@/lib/constants";
-import { vocabUnitsForGrade } from "@/lib/gameData";
+import { mathUnitForGrade, vocabUnitsForGrade } from "@/lib/gameData";
 
 type Student = { id: string; name: string };
 type Note = { id: string; title: string; content: string; createdAt: string | Date };
@@ -261,6 +261,49 @@ export default function SubjectDetail({
               </div>
             </div>
           )}
+
+          {subject.type === "MATH" &&
+            (() => {
+              const mathUnit = mathUnitForGrade(GRADE_LEVEL[subject.grade]);
+              if (!mathUnit) return null;
+              return (
+                <div className="mt-10">
+                  <h3 className="font-heading text-xl font-bold text-slate-700 mb-1">
+                    📐 Ενότητα Τάξης: {mathUnit.title}
+                  </h3>
+                  <p className="text-slate-500 text-sm mb-4">
+                    Παιχνίδια προσαρμοσμένα στην ύλη της {GRADE_LABELS[subject.grade]}.
+                  </p>
+                  <div className="bg-white rounded-2xl shadow p-5 max-w-md">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-2xl">{mathUnit.emoji}</span>
+                      <h4 className="font-heading font-bold text-slate-700">{mathUnit.title}</h4>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      {mathUnit.games.map((g) => {
+                        const key = `mathunit__${mathUnit.id}__${g.slot}`;
+                        return selectedStudent ? (
+                          <Link
+                            key={g.slot}
+                            href={`/play/${subject.id}/${key}?studentId=${selectedStudent}`}
+                            className="text-center rounded-xl bg-sky-50 text-sky-700 px-3 py-2 text-sm font-semibold hover:bg-sky-100 transition"
+                          >
+                            {g.emoji} {g.title}
+                          </Link>
+                        ) : (
+                          <span
+                            key={g.slot}
+                            className="text-center rounded-xl bg-slate-100 text-slate-400 px-3 py-2 text-sm font-semibold"
+                          >
+                            {g.emoji} {g.title}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
         </div>
       )}
 

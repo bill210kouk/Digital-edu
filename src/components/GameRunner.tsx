@@ -6,6 +6,7 @@ import {
   additionRounds,
   englishMemoryPairs,
   fillLetterRounds,
+  getMathUnit,
   getVocabUnit,
   numberMatchRounds,
   shapeCountRounds,
@@ -18,7 +19,7 @@ import {
   wordImageEnRounds,
   wordMatchRounds,
 } from "@/lib/gameData";
-import { parseUnitGameKey } from "@/lib/constants";
+import { parseMathUnitKey, parseUnitGameKey } from "@/lib/constants";
 import MultipleChoiceGame from "@/components/games/MultipleChoiceGame";
 import MemoryGame from "@/components/games/MemoryGame";
 import WordHighlightGame from "@/components/games/WordHighlightGame";
@@ -152,6 +153,14 @@ function generateContent(gameKey: string, gradeLevel: number): GameContent {
       case "listen":
         return { kind: "choice", rounds: unitListenRounds(unit) };
     }
+  }
+
+  const mathUnitGame = parseMathUnitKey(gameKey);
+  if (mathUnitGame) {
+    const unit = getMathUnit(mathUnitGame.unitId);
+    const game = unit?.games.find((g) => g.slot === mathUnitGame.slot);
+    if (game) return { kind: "choice", rounds: game.generate() };
+    return { kind: "choice", rounds: [] };
   }
 
   switch (gameKey) {

@@ -1,3 +1,5 @@
+import { MATH_UNITS } from "@/lib/gameData";
+
 export const GRADE_LABELS: Record<string, string> = {
   A: "Α' Δημοτικού",
   B: "Β' Δημοτικού",
@@ -107,6 +109,12 @@ export function parseUnitGameKey(gameKey: string) {
   return { unitId: match[1], type: match[2] };
 }
 
+export function parseMathUnitKey(gameKey: string) {
+  const match = gameKey.match(/^mathunit__(.+)__(.+)$/);
+  if (!match) return null;
+  return { unitId: match[1], slot: match[2] };
+}
+
 export function gameTitle(subjectType: string, gameKey: string): GameDef | undefined {
   const unitGame = parseUnitGameKey(gameKey);
   if (unitGame) {
@@ -115,5 +123,15 @@ export function gameTitle(subjectType: string, gameKey: string): GameDef | undef
       return { key: gameKey, title: gameType.label, description: "", emoji: gameType.emoji };
     }
   }
+
+  const mathUnitGame = parseMathUnitKey(gameKey);
+  if (mathUnitGame) {
+    const unit = MATH_UNITS.find((u) => u.id === mathUnitGame.unitId);
+    const game = unit?.games.find((g) => g.slot === mathUnitGame.slot);
+    if (game) {
+      return { key: gameKey, title: game.title, description: "", emoji: game.emoji };
+    }
+  }
+
   return SUBJECT_GAMES[subjectType]?.find((g) => g.key === gameKey);
 }
