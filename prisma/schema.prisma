@@ -36,6 +36,7 @@ model Subject {
   name      String
   type      SubjectType
   grade     Grade
+  joinCode  String?     @unique
   teacherId String
   teacher   Teacher     @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   createdAt DateTime    @default(now())

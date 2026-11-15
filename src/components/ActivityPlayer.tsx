@@ -16,12 +16,14 @@ export default function ActivityPlayer({
   studentId,
   studentName,
   backHref,
+  joinCode,
 }: {
   activity: FrameActivity;
   subjectId: string | null;
   studentId: string | null;
   studentName: string | null;
   backHref: string;
+  joinCode?: string;
 }) {
   const router = useRouter();
   const [status, setStatus] = useState<{ kind: "ok" | "info" | "error"; text: string } | null>(null);
@@ -37,21 +39,33 @@ export default function ActivityPlayer({
     const scored = m.total > 0;
     setStatus({ kind: "info", text: "Αποθήκευση αποτελέσματος..." });
     try {
-      const res = await fetch(`/api/subjects/${subjectId}/results`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          studentId,
-          gameKey: `${ACTIVITY_GAME_PREFIX}${activity.id}`,
-          gameLabel: activity.title,
-          score: scored ? m.score : 1,
-          maxScore: scored ? m.total : 1,
-          details: { review: m.review, note: m.note },
-        }),
-      });
+      const res = joinCode
+        ? await fetch(`/api/join/${joinCode}/results`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              studentId,
+              activityId: activity.id,
+              score: scored ? m.score : 1,
+              maxScore: scored ? m.total : 1,
+              details: { review: m.review, note: m.note },
+            }),
+          })
+        : await fetch(`/api/subjects/${subjectId}/results`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              studentId,
+              gameKey: `${ACTIVITY_GAME_PREFIX}${activity.id}`,
+              gameLabel: activity.title,
+              score: scored ? m.score : 1,
+              maxScore: scored ? m.total : 1,
+              details: { review: m.review, note: m.note },
+            }),
+          });
       setStatus(
         res.ok
-          ? { kind: "ok", text: `Το αποτέλεσμα του μαθητή ${studentName} αποθηκεύτηκε.` }
+          ? { kind: "ok", text: joinCode ? "Μπράβο! Το αποτέλεσμά σου στάλθηκε στον δάσκαλο." : `Το αποτέλεσμα του μαθητή ${studentName} αποθηκεύτηκε.` }
           : { kind: "error", text: "Το αποτέλεσμα δεν αποθηκεύτηκε. Δοκίμασε ξανά." }
       );
     } catch {

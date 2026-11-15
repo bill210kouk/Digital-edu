@@ -13,6 +13,7 @@ import {
 } from "@/lib/constants";
 import { mathUnitForGrade, vocabUnitsForGrade } from "@/lib/gameData";
 import { activityTypeInfo } from "@/lib/activityTypes";
+import JoinCodeBox from "@/components/JoinCodeBox";
 
 type Student = { id: string; name: string };
 type Note = { id: string; title: string; content: string; createdAt: string | Date };
@@ -49,10 +50,12 @@ export default function SubjectDetail({
   subject,
   results,
   activities = [],
+  joinCode,
 }: {
   subject: Subject;
   results: Result[];
   activities?: ActivityItem[];
+  joinCode: string;
 }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("students");
@@ -124,6 +127,7 @@ export default function SubjectDetail({
           <div className="text-4xl">{SUBJECT_EMOJI[subject.type]}</div>
           <div>
             <h1 className="font-heading text-2xl font-bold text-slate-700">{subject.name}</h1>
+            <JoinCodeBox subjectId={subject.id} initial={joinCode} />
             <p className="text-slate-500 text-sm">
               {SUBJECT_LABELS[subject.type]} · {GRADE_LABELS[subject.grade]}
             </p>
