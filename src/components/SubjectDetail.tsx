@@ -12,6 +12,7 @@ import {
   UNIT_GAME_TYPES,
 } from "@/lib/constants";
 import { mathUnitForGrade, vocabUnitsForGrade } from "@/lib/gameData";
+import { activityTypeInfo } from "@/lib/activityTypes";
 
 type Student = { id: string; name: string };
 type Note = { id: string; title: string; content: string; createdAt: string | Date };
@@ -20,9 +21,11 @@ type Result = {
   gameKey: string;
   score: number;
   maxScore: number;
+  gameLabel?: string | null;
   createdAt: string | Date;
   student: Student;
 };
+type ActivityItem = { id: string; title: string; type: string };
 type Subject = {
   id: string;
   name: string;
@@ -45,9 +48,11 @@ const TAB_LABELS: Record<Tab, string> = {
 export default function SubjectDetail({
   subject,
   results,
+  activities = [],
 }: {
   subject: Subject;
   results: Result[];
+  activities?: ActivityItem[];
 }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("students");
@@ -219,6 +224,48 @@ export default function SubjectDetail({
             ))}
           </div>
 
+          <div className="mt-8">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+              <h3 className="font-heading text-xl font-bold text-slate-700">✨ Οι δικές μου δραστηριότητες</h3>
+              <Link
+                href={`/dashboard/activities/new?subjectId=${subject.id}`}
+                className="rounded-full bg-sky-600 text-white px-4 py-1.5 text-sm font-semibold hover:bg-sky-700 transition"
+              >
+                + Νέα δραστηριότητα
+              </Link>
+            </div>
+            {activities.length === 0 ? (
+              <p className="text-slate-500 text-sm">
+                Δεν υπάρχουν ακόμα δραστηριότητες. Φτιάξε τεστ, σταυρόλεξα ή τροχό για το μάθημα.
+              </p>
+            ) : (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {activities.map((a) => {
+                  const info = activityTypeInfo(a.type);
+                  return (
+                    <div key={a.id} className="bg-white rounded-2xl shadow p-5 flex flex-col gap-2">
+                      <div className="text-3xl">{info.emoji}</div>
+                      <h4 className="font-heading font-bold text-lg text-slate-700">{a.title}</h4>
+                      <p className="text-sm text-slate-500 flex-1">{info.label}</p>
+                      {selectedStudent ? (
+                        <Link
+                          href={`/dashboard/activities/${a.id}/play?studentId=${selectedStudent}`}
+                          className="mt-2 inline-block text-center rounded-full bg-amber-400 text-amber-900 px-4 py-2 font-bold hover:bg-amber-300 transition"
+                        >
+                          Παίξε! 🎮
+                        </Link>
+                      ) : (
+                        <span className="mt-2 inline-block text-center rounded-full bg-slate-100 text-slate-400 px-4 py-2 font-bold">
+                          Επίλεξε μαθητή
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
           {subject.type === "GLOSSA" && (
             <div className="mt-10">
               <h3 className="font-heading text-xl font-bold text-slate-700 mb-1">
@@ -374,10 +421,14 @@ export default function SubjectDetail({
                     <tr key={r.id} className="border-b last:border-0">
                       <td className="py-2 font-medium text-slate-700">🧒 {r.student.name}</td>
                       <td className="py-2">
-                        {game ? `${game.emoji} ${game.title}` : r.gameKey}
+                        {game
+                          ? `${game.emoji} ${game.title}`
+                          : r.gameLabel
+                            ? `✨ ${r.gameLabel}`
+                            : r.gameKey}
                       </td>
                       <td className="py-2">
-                        {r.score} / {r.maxScore}
+                        {r.score} / {r.maxScore} ({Math.round((r.score / r.maxScore) * 100)}%)
                       </td>
                       <td className="py-2 text-slate-400">
                         {new Date(r.createdAt).toLocaleDateString("el-GR")}

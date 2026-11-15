@@ -31,5 +31,14 @@ export default async function SubjectPage({
     take: 50,
   });
 
-  return <SubjectDetail subject={subject} results={results} />;
+  const activities = await prisma.activity.findMany({
+    where: {
+      teacherId: session!.teacherId,
+      OR: [{ subjectId: id }, { subjectId: null }],
+    },
+    orderBy: { updatedAt: "desc" },
+    select: { id: true, title: true, type: true },
+  });
+
+  return <SubjectDetail subject={subject} results={results} activities={activities} />;
 }

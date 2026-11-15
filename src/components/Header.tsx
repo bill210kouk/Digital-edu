@@ -18,6 +18,12 @@ export default function Header({ teacherName }: { teacherName: string }) {
         🎈 Μαθαίνω Παίζοντας
       </Link>
       <div className="flex items-center gap-4">
+        <Link
+          href="/dashboard/activities"
+          className="rounded-full bg-amber-100 text-amber-800 px-4 py-1.5 text-sm font-bold hover:bg-amber-200 transition"
+        >
+          ✨ Δραστηριότητες
+        </Link>
         <span className="text-slate-500 hidden sm:inline">Γεια σου, {teacherName} 👋</span>
         <button
           onClick={handleLogout}

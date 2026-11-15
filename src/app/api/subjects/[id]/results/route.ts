@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { assertSubjectOwner } from "@/lib/ownership";
@@ -9,6 +10,11 @@ const schema = z.object({
   gameKey: z.string().min(1),
   score: z.number().int().min(0),
   maxScore: z.number().int().min(1),
+  gameLabel: z.string().max(200).optional(),
+  details: z
+    .record(z.string(), z.unknown())
+    .refine((d) => JSON.stringify(d).length <= 50_000, "Πολύ μεγάλα στοιχεία")
+    .optional(),
 });
 
 export async function GET(
@@ -56,8 +62,13 @@ export async function POST(
   });
   if (!student) return NextResponse.json({ error: "Ο μαθητής δεν βρέθηκε" }, { status: 404 });
 
+  const { details, ...fields } = parsed.data;
   const result = await prisma.gameResult.create({
-    data: { ...parsed.data, subjectId: id },
+    data: {
+      ...fields,
+      details: details as Prisma.InputJsonValue | undefined,
+      subjectId: id,
+    },
   });
   return NextResponse.json({ result });
 }
