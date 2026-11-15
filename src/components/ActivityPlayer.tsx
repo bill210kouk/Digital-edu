@@ -4,7 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ACTIVITY_GAME_PREFIX, activityTypeInfo } from "@/lib/activityTypes";
-import ActivityFrame, { type FrameActivity, type FrameMessage } from "@/components/ActivityFrame";
+import type { ActivityType } from "@/lib/activityTypes";
+import Runner, { type Outcome } from "@/components/activities/Runner";
+import { btnGhost } from "@/components/activities/ui";
+
+type FrameActivity = { id: string; title: string; type: string; tag: string; data: unknown };
 
 export default function ActivityPlayer({
   activity,
@@ -24,19 +28,13 @@ export default function ActivityPlayer({
   const info = activityTypeInfo(activity.type);
   const canSave = Boolean(subjectId && studentId);
 
-  async function handleMessage(m: FrameMessage) {
-    if (m.type === "exit") {
-      router.push(backHref);
-      return;
-    }
-    if (m.type !== "finish") return;
-
+  async function handleFinish(m: Outcome) {
     if (!canSave) {
       setStatus({ kind: "info", text: "Δοκιμαστικό παιχνίδι: το αποτέλεσμα δεν αποθηκεύεται." });
       return;
     }
     // Δραστηριότητες χωρίς βαθμολογία (σταυρόλεξο, μνήμη) καταγράφονται ως «ολοκληρώθηκε».
-    const scored = (m.total ?? 0) > 0;
+    const scored = m.total > 0;
     setStatus({ kind: "info", text: "Αποθήκευση αποτελέσματος..." });
     try {
       const res = await fetch(`/api/subjects/${subjectId}/results`, {
@@ -48,7 +46,7 @@ export default function ActivityPlayer({
           gameLabel: activity.title,
           score: scored ? m.score : 1,
           maxScore: scored ? m.total : 1,
-          details: { review: m.review ?? [], note: m.note ?? "" },
+          details: { review: m.review, note: m.note },
         }),
       });
       setStatus(
@@ -86,7 +84,18 @@ export default function ActivityPlayer({
           {status.text}
         </p>
       )}
-      <ActivityFrame mode="play" activity={activity} onMessage={handleMessage} />
+      <div className="bg-white rounded-3xl shadow p-5 sm:p-8">
+        <Runner
+          type={activity.type as ActivityType}
+          data={activity.data as Record<string, unknown>}
+          onFinish={handleFinish}
+          extra={
+            <button type="button" onClick={() => router.push(backHref)} className={btnGhost}>
+              Τέλος
+            </button>
+          }
+        />
+      </div>
     </div>
   );
 }

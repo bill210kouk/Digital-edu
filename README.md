@@ -73,9 +73,9 @@ Next.js (App Router) · TypeScript · Tailwind CSS · Prisma · PostgreSQL · JW
 
 ### Πώς είναι φτιαγμένο
 
-Ο δημιουργός και ο αναπαραγωγέας είναι ένα αυτόνομο αρχείο
-`public/ergastiri/index.html` που ανοίγει μέσα σε iframe της ίδιας προέλευσης
-(`ActivityFrame`) και μιλά με τη σελίδα μέσω `postMessage`. Το αρχείο μπορεί να
-τρέξει και μόνο του, χωρίς εφαρμογή (ανοίγεις κατευθείαν το `index.html`).
-Κάθε τύπος δραστηριότητας δηλώνεται με `registerType(...)` μέσα στο αρχείο. Για
-να προσθέσεις νέο τύπο, πρόσθεσε το κλειδί του και στο `src/lib/activityTypes.ts`.
+Ο δημιουργός είναι κανονικό μέρος της εφαρμογής (React/TypeScript, Tailwind):
+
+- `src/lib/activities/` — καθαρή λογική (ανάλυση κειμένου, γεννήτρια σταυρολέξου, πράξεις).
+- `src/components/activities/` — editors και players ανά τύπο, και το `registry.tsx`.
+- Για νέο τύπο: πρόσθεσε το κλειδί στο `src/lib/activityTypes.ts` και έναν editor
+  και player στο `registry.tsx`.
